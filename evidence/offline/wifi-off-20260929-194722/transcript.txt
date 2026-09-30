@@ -1,0 +1,83 @@
+
+════════ 0. Device and network state ════════
+Tue Sep 29 19:47:22 PDT 2026
+ProductName:		macOS ProductVersion:		26.6.2 BuildVersion:		25G83 
+chip: Apple M1 Pro, RAM: 16 GB
+Wi-Fi Power (en0): Off
+internet check: https://www.google.com is UNREACHABLE (expected for this demo)
+
+════════ 1. Restart the local Ollama server (weights load from local disk only) ════════
+$ ollama --version
+ollama version is 0.34.4
+$ ollama list
+NAME                    ID              SIZE      MODIFIED    
+gemma4:e4b-it-q4_K_M    dc35e8d9c606    6.6 GB    3 hours ago    
+embeddinggemma:300m     85462619ee72    621 MB    3 hours ago    
+
+════════ 2. Help (a fresh CLI process for every command) ════════
+$ ./wiki --help
+usage: wiki [-h] command ...
+
+Personal wiki CLI: a local Gemma harness over your own notes (chat, ask, search, ingest).
+
+positional arguments:
+  command
+    ingest    read sources in vault/raw, generate linked wiki notes, rebuild
+              indexes
+    search    show original matching passages (no model answer)
+    ask       standalone cited answer from your sources
+    chat      personal assistant with conversation context
+    eval      run the fixed ask-mode tests and write evidence cards
+    check     verify wiki links, headings and unchanged sources
+    rename    rename a wiki note and update every link to it
+    reindex   rebuild index.md, catalog and retrieval index (no generation)
+    status    model, runtime, memory and device information
+
+options:
+  -h, --help  show this help message and exit
+
+modes:
+  search  retrieval only: original passages + paths, never calls the language model
+  ask     standalone factual answer from retrieved raw passages, with citations,
+          or "INSUFFICIENT EVIDENCE" (no chat history, no persona)
+  chat    personal assistant with conversation memory; looks up notes only when needed
+
+examples:
+  wiki ingest vault/raw
+  wiki search "row level security"
+  wiki ask "What mean score did the trained Pac-Man agent get?"
+  wiki chat
+  wiki eval                 # run the 4 fixed ask-mode tests -> evidence/ask/
+  wiki check                # verify links, headings and unchanged sources
+
+configuration (environment variables):
+  WIKI_MODEL        chat/answer model   (default gemma4:e4b-it-q4_K_M)
+  WIKI_EMBED_MODEL  embedding model     (default embeddinggemma:300m)
+  OLLAMA_HOST       local Ollama server (default http://127.0.0.1:11434)
+
+required inputs: Ollama running locally with both models pulled (`ollama pull ...`);
+sources as .md/.txt files in vault/raw/. Instructions: prompts/*.md.
+
+════════ 3. Status: model, runtime, device ════════
+$ ./wiki status
+Model / runtime
+  ollama server http://127.0.0.1:11434: version 0.34.4
+  gemma4:e4b-it-q4_K_M: available locally
+Device
+  chip: Apple M1 Pro
+  memory bytes: 17179869184
+  macOS: 26.6.2
+  internet: unreachable
+
+════════ 4. Ingest all sources (unchanged -> no duplicates, no model call) ════════
+$ ./wiki ingest vault/raw
+── ingest · local · model gemma4:e4b-it-q4_K_M · internet: unreachable ──
+= Berkeley Network Tracker README.md: unchanged (sha256 3a234448db19), notes up to date - no model call
+= Custom nanoGPT LLM README.md: unchanged (sha256 8b446fde4201), notes up to date - no model call
+= Ms Pac-Man DQN README.md: unchanged (sha256 877f75d540bf), notes up to date - no model call
+  embeddings: 0 new passages embedded with embeddinggemma:300m
+  index.md, Source Catalog.md and retrieval index rebuilt (176 passages)
+  link check: all internal links and source references resolve
+
+════════ 5. Ingest one source with local Gemma (reviewed note -> draft goes to review queue) ════════
+$ ./wiki ingest vault/raw/Berkeley Network Tracker README.md --force

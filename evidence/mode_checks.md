@@ -1,9 +1,13 @@
 # Chat and search mode checks (offline run)
 
-Run: `LABEL=sandbox-no-network sandbox-exec -f scripts/no-internet.sb ./scripts/offline_demo.sh`
-on 2026-09-29 at 17:00 PDT, with Gemma `gemma4:e4b-it-q4_K_M` and `embeddinggemma:300m` in Ollama 0.34.4,
-local execution only, internet unreachable (every header line below says so). Full transcript:
-[`offline/sandbox-no-network-20260929-170024/transcript.txt`](offline/sandbox-no-network-20260929-170024/transcript.txt).
+Run: `./scripts/offline_demo.sh` with **Wi-Fi switched off** (`Wi-Fi Power (en0): Off`), 2026-09-29 at
+19:48–20:02 PDT, with Gemma `gemma4:e4b-it-q4_K_M` and `embeddinggemma:300m` in Ollama 0.34.4, local
+execution only, internet unreachable (every header line below says so). Full transcript:
+[`offline/wifi-off-20260929-194803/transcript.txt`](offline/wifi-off-20260929-194803/transcript.txt). The same checks passed in the earlier
+[sandboxed no-network run](offline/sandbox-no-network-20260929-170024/transcript.txt).
+
+The first chat turn shows `647.57s` because the Mac went into idle sleep on battery for 626 s
+during that reply (macOS power log). Its first token arrived after 2.1 s, and the other turns took 8–19 s.
 Raw per-turn records (router decision, passages, citation checks, timings) are in `runs/2026-09-29/chat.jsonl`.
 
 | # | Check | Expected | Actual | Result |
@@ -23,7 +27,7 @@ its prompt only from `prompts/wiki-instructions.md` plus passages retrieved from
 Chat history is never written to disk (except explicit `/save` drafts in `drafts/`, which are
 never indexed).
 
-## Transcript excerpt: search, chat, and ask-after-chat
+## Transcript excerpt: search, chat, and ask-after-chat (Wi-Fi off)
 
 ```text
 ════════ 8. Search mode: original passages only, no generated answer ════════
@@ -102,7 +106,7 @@ Also, you can use some quick commands:
 *   `/help` to see this list again!
 
 What are you working on right now? Maybe we can look at the DQN agent or plan out the next steps for nanoGPT?
-  (14.54s)
+  (647.57s)
 
 you ▸ what can you help me with?
   ↳ no notes lookup (conversation only)
@@ -118,7 +122,7 @@ Here are some concrete things we could tackle today:
 *   **Planning:** If you have a big assignment coming up, we can outline a study plan or a project roadmap!
 
 Just let me know which project or concept is giving you trouble! 💡
-  (12.96s)
+  (15.13s)
 
 you ▸ Draft a short plan for how I should prepare my next class assignment README.
   ↳ no notes lookup (conversation only)
@@ -147,7 +151,7 @@ Here is a suggested outline for your README:
 *   **Execution:** Clear, simple command to start the project.
 
 How does that look as a starting framework? If you tell me which project this is for, I can make the suggestions much more specific!
-  (19.82s)
+  (19.15s)
 
 you ▸ make that shorter
   ↳ no notes lookup (conversation only)
@@ -170,7 +174,7 @@ Here is the super-condensed README structure:
 *   Simple `pip install` command and the single command to run it.
 
 Does that hit the sweet spot for brevity, or should I pare it down even further? 😊
-  (12.16s)
+  (11.91s)
 
 you ▸ What did my Pac-Man project change about replay capacity, and why?
   ↳ notes lookup (router query: "Pac-Man DQN replay capacity changes"): [1] wiki/Concepts/Replay Memory.md § In my projects, [2] wiki/Projects/Ms Pac-Man DQN.md § Ms Pac-Man DQN, [3] wiki/Projects/Ms Pac-Man DQN.md § Key facts, [4] raw/Ms Pac-Man DQN README.md § One limitation
@@ -182,7 +186,7 @@ Pip ▸ Based on your notes, here is what changed about the replay capacity in t
 It's interesting to note a side effect from that change! While increasing capacity helped learning, your notes also mention that raising it to 15,000 actually slowed down the run time because the sampling function was copying the entire deque [3, 4].
 
 Let me know if you want to draft a section in your README explaining this trade-off!
-  (13.55s)
+  (13.17s)
 
 you ▸ By the way, I got an A+ on the Pac-Man assignment.
   ↳ no notes lookup (conversation only)
@@ -191,7 +195,7 @@ Pip ▸ That is awesome news! Huge congrats on the A+! 🎉 You should be really
 Since I can't remember things outside of this current chat session unless you save them, you might want to use `/save` right now to keep a record of that great success!
 
 What's next on your list? Are we moving on to the nanoGPT documentation, or should we refine that README plan?
-  (7.83s)
+  (8.09s)
 
 you ▸ /exit
 
@@ -208,6 +212,5 @@ rejected draft: The mean score for the trained agent in the Ms. Pac-Man DQN subm
   retrieved but not cited: [1] Ms Pac-Man DQN README.md § Ms. Pac-Man DQN — Class 3 submission, [2] Ms Pac-Man DQN README.md § What I expected, and what actually happe, [3] Ms Pac-Man DQN README.md § Repository contents, [4] Ms Pac-Man DQN README.md § My three choices, [5] Ms Pac-Man DQN README.md § My three choices, [6] Ms Pac-Man DQN README.md § Training dashboard, [7] Ms Pac-Man DQN README.md § Two other hyperparameters I changed, and, [8] Ms Pac-Man DQN README.md § Earlier runs, reported honestly
 Citation check: insufficient-evidence response (no claims to verify).
 
-status: insufficient · 4.98s total · 2270 prompt tok · 63 output tok · 34.0 tok/s · saved to runs/2026-09-29/ask.jsonl
-
+status: insufficient · 5.19s total · 2270 prompt tok · 63 output tok · 33.9 tok/s · saved to runs/2026-09-29/ask.jsonl
 ```

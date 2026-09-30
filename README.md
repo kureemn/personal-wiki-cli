@@ -9,20 +9,19 @@ internet**. It has three modes: `chat` (personal assistant), `ask` (cited factua
 
 | What | Result | Link |
 |---|---|---|
-| 4 ask-mode tests, offline | 3 grounded, cited answers + 1 correct INSUFFICIENT EVIDENCE | [evidence cards](evidence/offline/sandbox-no-network-20260929-170024/ask/) |
-| Chat / search mode checks, offline | 9 of 9 behave as specified | [mode_checks.md](evidence/mode_checks.md) |
-| Offline demo transcript | ingest, help, status, 4 tests, search, chat, ask-after-chat | [transcript.txt](evidence/offline/sandbox-no-network-20260929-170024/transcript.txt) |
+| 4 ask-mode tests, **Wi-Fi off** | 3 grounded, cited answers + 1 correct INSUFFICIENT EVIDENCE | [evidence cards](evidence/offline/wifi-off-20260929-194803/ask/) |
+| Chat / search mode checks, **Wi-Fi off** | 9 of 9 behave as specified | [mode_checks.md](evidence/mode_checks.md) |
+| Offline demo transcript | Wi-Fi Power: Off; ingest, help, status, 4 tests, search, chat, ask-after-chat | [Wi-Fi-off transcript](evidence/offline/wifi-off-20260929-194803/transcript.txt) · [sandboxed run](evidence/offline/sandbox-no-network-20260929-170024/transcript.txt) |
 | Obsidian screenshots | note, index, graph, source catalog, local graph | [evidence/obsidian/](evidence/obsidian/) |
 | A real failure and its fix | Test 4 answered a *grade* question with a *score* → added an answer check | [dev_runs/](evidence/dev_runs/) |
 | Retrieval before/after | BM25 missed Test 3's passages → hybrid retrieval found them | [v1](evidence/retrieval/v1_bm25_baseline.txt) · [v2](evidence/retrieval/v2_hybrid_final.txt) |
 | Memory and timing | ingest peak +7.2 GB (14.5 of 16 GB); new ask question 14–21 s | [performance](evidence/performance/memory_and_timing.txt) |
 
-> **About the offline proof:** the recorded offline run executed the CLI **and** the Ollama
-> server inside a macOS sandbox that denies every network connection except `localhost`
-> ([`scripts/no-internet.sb`](scripts/no-internet.sb)); the transcript shows
-> `internet: unreachable` on every command. A run with Wi-Fi physically switched off uses the
-> same script ([how to run it](#6-offline-demonstration)); its output lands in
-> `evidence/offline/wifi-off-*/`.
+> **About the offline proof:** the final demonstration ran with **Wi-Fi switched off**
+> (`Wi-Fi Power (en0): Off`, google.com unreachable, `internet: unreachable` on every command),
+> after restarting Ollama and a fresh CLI process per command. An earlier run with the CLI and
+> the Ollama server inside a no-network macOS sandbox gave **identical** answers, passages and
+> citations for all four tests. See [§6](#6-offline-demonstration).
 
 ---
 
@@ -273,7 +272,23 @@ runs match); 0.6 for chat replies. Gemma 4's "thinking" is off (`think: false`) 
 10. Runs ask after chat.
 11. Reports memory.
 
-**Recorded run** (2026-09-29 17:00 PDT, sandboxed):
+**Primary run: Wi-Fi off** (2026-09-29 19:48–20:02 PDT). I turned Wi-Fi off and ran:
+
+```bash
+./scripts/offline_demo.sh
+```
+
+→ [transcript](evidence/offline/wifi-off-20260929-194803/transcript.txt) · [ask cards](evidence/offline/wifi-off-20260929-194803/ask/) ·
+[Ollama server log](evidence/offline/wifi-off-20260929-194803/ollama-server.log)
+
+Two things to know about this run:
+- It took 14 minutes instead of ~6 because **the Mac went into idle sleep on battery** at
+  19:50:26 for 626 s (macOS `pmset -g log`), in the middle of the first chat reply. That turn
+  shows `647.57s`; its first token had arrived after 2.1 s, and every other chat turn took 8–19 s.
+- An earlier attempt ([`wifi-off-20260929-194722`](evidence/offline/wifi-off-20260929-194722/transcript.txt))
+  was stopped during step 5 and restarted 41 s later. It is incomplete and kept only for completeness.
+
+**Supporting run: network blocked by a sandbox** (2026-09-29 17:00 PDT):
 
 ```bash
 LABEL=sandbox-no-network sandbox-exec -f scripts/no-internet.sb ./scripts/offline_demo.sh
@@ -281,23 +296,16 @@ LABEL=sandbox-no-network sandbox-exec -f scripts/no-internet.sb ./scripts/offlin
 
 [`scripts/no-internet.sb`](scripts/no-internet.sb) denies every outbound network connection
 except to `localhost`. The Ollama server is restarted *inside* the sandbox, so neither the CLI
-nor the model server could reach the internet. This only works because the weights, tokenizer
-and embedder were already on local disk.
+nor the model server could reach the internet. The four tests produced exactly the same
+answers, passages and citations as the Wi-Fi-off run (temperature 0, fixed seed).
 → [transcript](evidence/offline/sandbox-no-network-20260929-170024/transcript.txt) ·
 [ask cards](evidence/offline/sandbox-no-network-20260929-170024/ask/) ·
 [Ollama server log](evidence/offline/sandbox-no-network-20260929-170024/ollama-server.log)
 
-**Wi-Fi-off run** (the literal requirement): turn Wi-Fi off, then
-
-```bash
-./scripts/offline_demo.sh
-```
-
-The output goes to `evidence/offline/wifi-off-<timestamp>/`.
 
 ## 7. Evidence
 
-### Four ask-mode tests (offline run, `gemma4:e4b-it-q4_K_M`, local)
+### Four ask-mode tests (Wi-Fi off, `gemma4:e4b-it-q4_K_M`, local)
 
 Expectations were written first in [`evals/questions.json`](evals/questions.json). Each card
 contains:
@@ -311,10 +319,10 @@ contains:
 
 | Test | Question (abridged) | Retrieved expected source? | Answer | Citations check out? | Card |
 |---|---|---|---|---|---|
-| 1 direct | Trained vs untrained mean score | yes, ranks 1–2 | "trained 1032.0 [1][2]… baseline 492.0 [1][2][6]" | yes, all three passages state both numbers | [test1](evidence/offline/sandbox-no-network-20260929-170024/ask/test1.md) |
-| 2 reworded | Why can't one person see someone else's contacts? | yes, **rank 5** | Row Level Security, `auth.user_id() = user_id`, JWT verified before Postgres [1][5][6] | yes | [test2](evidence/offline/sandbox-no-network-20260929-170024/ask/test2.md) |
-| 3 two sources | Compute device + training time for Pac-Man and nanoGPT | yes, both | M1 Pro + PyTorch MPS, 4,388 s [4]; M1 Pro `DEVICE="cpu"`, 16.6 s / 18.7 s [1][2] | yes (omits that 4,388 s includes demo recording) | [test3](evidence/offline/sandbox-no-network-20260929-170024/ask/test3.md) |
-| 4 unanswerable | What grade did I receive for Pac-Man? | n/a (Pac-Man passages retrieved, none has a grade) | **INSUFFICIENT EVIDENCE**, with the rejected draft shown | n/a | [test4](evidence/offline/sandbox-no-network-20260929-170024/ask/test4.md) |
+| 1 direct | Trained vs untrained mean score | yes, ranks 1–2 | "trained 1032.0 [1][2]… baseline 492.0 [1][2][6]" | yes, all three passages state both numbers | [test1](evidence/offline/wifi-off-20260929-194803/ask/test1.md) |
+| 2 reworded | Why can't one person see someone else's contacts? | yes, **rank 5** | Row Level Security, `auth.user_id() = user_id`, JWT verified before Postgres [1][5][6] | yes | [test2](evidence/offline/wifi-off-20260929-194803/ask/test2.md) |
+| 3 two sources | Compute device + training time for Pac-Man and nanoGPT | yes, both | M1 Pro + PyTorch MPS, 4,388 s [4]; M1 Pro `DEVICE="cpu"`, 16.6 s / 18.7 s [1][2] | yes (omits that 4,388 s includes demo recording) | [test3](evidence/offline/wifi-off-20260929-194803/ask/test3.md) |
+| 4 unanswerable | What grade did I receive for Pac-Man? | n/a (Pac-Man passages retrieved, none has a grade) | **INSUFFICIENT EVIDENCE**, with the rejected draft shown | n/a | [test4](evidence/offline/wifi-off-20260929-194803/ask/test4.md) |
 
 Development runs, including the failed first version of Test 4, are in [`evidence/dev_runs/`](evidence/dev_runs/).
 
@@ -382,7 +390,7 @@ before taking the top 8. Keep `evals/questions.json` as the regression set and t
 expected passage's rank, not just pass/fail.
 
 **Other honest notes.**
-- The offline proof recorded here is a sandbox run. The Wi-Fi-off run uses the identical script.
+- The Mac idle-slept on battery during the Wi-Fi-off demo (see §6). Keep it plugged in, or run `caffeinate -i ./scripts/offline_demo.sh`, for clean timings.
 - Ingest at a 24K context uses about 90% of this Mac's memory. E2B, or splitting sources into sections, would reduce that.
 - `/api/ps` memory figures from Ollama 0.34.4 are wrong for Gemma 4, so I report `ps`/`footprint`/`vm_stat` measurements instead.
 
