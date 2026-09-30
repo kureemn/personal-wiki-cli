@@ -1,14 +1,12 @@
 # Chat and search mode checks (offline run)
 
-Run: `./scripts/offline_demo.sh` with **Wi-Fi switched off** (`Wi-Fi Power (en0): Off`), 2026-09-29 at
-19:48–20:02 PDT, with Gemma `gemma4:e4b-it-q4_K_M` and `embeddinggemma:300m` in Ollama 0.34.4, local
-execution only, internet unreachable (every header line below says so). Full transcript:
-[`offline/wifi-off-20260929-194803/transcript.txt`](offline/wifi-off-20260929-194803/transcript.txt). The same checks passed in the earlier
-[sandboxed no-network run](offline/sandbox-no-network-20260929-170024/transcript.txt) and again with the
-[final code](offline/sandbox-final-code-20260929-202152/transcript.txt).
-
-The first chat turn shows `647.57s` because the Mac went into idle sleep on battery for 626 s
-during that reply (macOS power log). Its first token arrived after 2.1 s, and the other turns took 8–19 s.
+Run: `./scripts/offline_demo.sh` with **Wi-Fi switched off** (`Wi-Fi Power (en0): Off`), final code
+(commit `328e3f2`), 2026-09-29 at 20:29 PDT, with Gemma `gemma4:e4b-it-q4_K_M` and `embeddinggemma:300m`
+in Ollama 0.34.4, local execution only, internet unreachable (every header line below says so).
+Full transcript: [`offline/wifi-off-20260929-202902/transcript.txt`](offline/wifi-off-20260929-202902/transcript.txt).
+The same nine checks also passed in the earlier Wi-Fi-off run
+([`wifi-off-…194803`](offline/wifi-off-20260929-194803/transcript.txt), previous code) and in every
+sandboxed run.
 Raw per-turn records (router decision, passages, citation checks, timings) are in `runs/2026-09-29/chat.jsonl`.
 
 | # | Check | Expected | Actual | Result |
@@ -28,30 +26,39 @@ its prompt only from `prompts/wiki-instructions.md` plus passages retrieved from
 Chat history is never written to disk (except explicit `/save` drafts in `drafts/`, which are
 never indexed).
 
-## Transcript excerpt: search, chat, and ask-after-chat (Wi-Fi off)
+## Transcript excerpt: search, chat, and ask-after-chat (Wi-Fi off, final code)
 
-```text
+````text
 ════════ 8. Search mode: original passages only, no generated answer ════════
 $ ./wiki search row level security policies -k 3
 ── search · local · model gemma4:e4b-it-q4_K_M · embed embeddinggemma:300m · internet: unreachable ──
-[1] wiki/Concepts/Row Level Security.md  lines 9-11  § Row Level Security  (hybrid score 0.0328 · bm25 17.546 · cos 0.6978)
+[1] wiki/Concepts/Row Level Security.md  lines 10-12  § Row Level Security  (hybrid score 0.0328 · bm25 16.126 · cos 0.7008)
     # Row Level Security
     
-    RLS policies restrict which rows in a database table a specific user can see or modify.
+    **General definition** *(written by Gemma from general knowledge, not taken from my sources)*: RLS policies restrict which rows in a database table a specific user can see or modify.
 
-[2] raw/Berkeley Network Tracker README.md  lines 190-192  § Authentication & Row Level Security  (hybrid score 0.0313 · bm25 14.435 · cos 0.5546)
-    - **Four separate policies**, one per operation, rather than one blanket policy — each is independently readable and testable, and matches the assignment's requirement of distinct select/insert/update
-    - **`update` has both `USING` and `WITH CHECK`.** `USING` gates which existing rows you're even allowed to touch; `WITH CHECK` re-evaluates the same predicate against the row *after* the write. Withou
-    - **RLS is necessary but not sufficient.** Postgres also checks table-level `GRANT`s before it ever consults a policy — RLS policies restrict *which rows*, grants control *whether the role can attempt
+[2] raw/Berkeley Network Tracker README.md  lines 161-188  § Authentication & Row Level Security  (hybrid score 0.0308 · bm25 13.791 · cos 0.5164)
+    ## Authentication & Row Level Security
+    
+    **Ownership rule:** every policy on `contacts` reduces to one predicate — `auth.user_id() = user_id` — where `auth.user_id()` reads the `sub` claim out of the JWT that Managed Better Auth issued when 
+    
+    ```sql
+    alter table contacts enable row level security;
+    
+    create policy contacts_select_own on contacts
+    ... (20 more lines; --full to show)
 
-[3] wiki/Projects/Berkeley Networking Tracker.md  lines 24-25  § Key facts  (hybrid score 0.0308 · bm25 15.433 · cos 0.4038)
-    - The Zod schema mirrors the database's `CHECK` constraints for instant UI feedback. (source: [[Berkeley Network Tracker README#Authentication & Row Level Security|Authentication & Row Level Security]
-    - The application uses four separate RLS policies, one per operation (select, insert, update, delete). (source: [[Berkeley Network Tracker README#Authentication & Row Level Security|Authentication & R
+[3] wiki/Concepts/Serverless Database.md  lines 20-24  § Related concepts  (hybrid score 0.0303 · bm25 13.752 · cos 0.4699)
+    ## Related concepts
+    
+    Added during review. Each link says why the two ideas are connected in my projects.
+    
+    - [[Row Level Security]]: Neon Postgres is where the Row Level Security policies are enforced. (source: [[Berkeley Network Tracker README#Technology stack|Technology stack]])
 
 search returns original passages only; no answer is generated.
 $ ./wiki search how long did training take --scope raw -k 3
 ── search · local · model gemma4:e4b-it-q4_K_M · embed embeddinggemma:300m · internet: unreachable ──
-[1] raw/Ms Pac-Man DQN README.md  lines 157-178  § What the run actually cost  (hybrid score 0.0308 · bm25 2.192 · cos 0.2686)
+[1] raw/Ms Pac-Man DQN README.md  lines 157-178  § What the run actually cost  (hybrid score 0.0308 · bm25 2.0 · cos 0.2686)
     ### What the run actually cost
     
     | | |
@@ -62,7 +69,7 @@ $ ./wiki search how long did training take --scope raw -k 3
     | Elapsed time | **4,388 seconds (~73 minutes)**, including periodic demonstrations |
     ... (14 more lines; --full to show)
 
-[2] raw/Ms Pac-Man DQN README.md  lines 122-128  § Training dashboard  (hybrid score 0.0306 · bm25 2.856 · cos 0.2224)
+[2] raw/Ms Pac-Man DQN README.md  lines 122-128  § Training dashboard  (hybrid score 0.0306 · bm25 2.498 · cos 0.2224)
     ### Training dashboard
     
     ![Training dashboard](results/training_dashboard.png)
@@ -71,7 +78,7 @@ $ ./wiki search how long did training take --scope raw -k 3
     which rises as Q-values grow. Right: exploration, held constant at 0.10 after the 1,000-decision
     random warm-up.
 
-[3] raw/Custom nanoGPT LLM README.md  lines 303-318  § Loss on the fixed panels  (hybrid score 0.0299 · bm25 1.653 · cos 0.2946)
+[3] raw/Custom nanoGPT LLM README.md  lines 303-318  § Loss on the fixed panels  (hybrid score 0.0299 · bm25 1.553 · cos 0.2946)
     | Run | Step | Training panel loss | Validation panel loss |
     |---|---:|---:|---:|
     | Setup check | 0 | 4.9263 | 4.9275 |
@@ -107,7 +114,7 @@ Also, you can use some quick commands:
 *   `/help` to see this list again!
 
 What are you working on right now? Maybe we can look at the DQN agent or plan out the next steps for nanoGPT?
-  (647.57s)
+  (17.19s)
 
 you ▸ what can you help me with?
   ↳ no notes lookup (conversation only)
@@ -123,7 +130,7 @@ Here are some concrete things we could tackle today:
 *   **Planning:** If you have a big assignment coming up, we can outline a study plan or a project roadmap!
 
 Just let me know which project or concept is giving you trouble! 💡
-  (15.13s)
+  (14.28s)
 
 you ▸ Draft a short plan for how I should prepare my next class assignment README.
   ↳ no notes lookup (conversation only)
@@ -152,7 +159,7 @@ Here is a suggested outline for your README:
 *   **Execution:** Clear, simple command to start the project.
 
 How does that look as a starting framework? If you tell me which project this is for, I can make the suggestions much more specific!
-  (19.15s)
+  (21.64s)
 
 you ▸ make that shorter
   ↳ no notes lookup (conversation only)
@@ -175,28 +182,32 @@ Here is the super-condensed README structure:
 *   Simple `pip install` command and the single command to run it.
 
 Does that hit the sweet spot for brevity, or should I pare it down even further? 😊
-  (11.91s)
+  (11.88s)
 
 you ▸ What did my Pac-Man project change about replay capacity, and why?
-  ↳ notes lookup (router query: "Pac-Man DQN replay capacity changes"): [1] wiki/Concepts/Replay Memory.md § In my projects, [2] wiki/Projects/Ms Pac-Man DQN.md § Ms Pac-Man DQN, [3] wiki/Projects/Ms Pac-Man DQN.md § Key facts, [4] raw/Ms Pac-Man DQN README.md § One limitation
-Pip ▸ Based on your notes, here is what changed about the replay capacity in the Ms. Pac-Man project and why:
+  ↳ notes lookup (router query: "Pac-Man DQN replay capacity changes"): [1] wiki/Concepts/Replay Memory.md § In my projects, [2] wiki/Projects/Ms Pac-Man DQN.md § Ms Pac-Man DQN, [3] wiki/Concepts/Deep Q-Network.md § Related concepts, [4] raw/Ms Pac-Man DQN README.md § One limitation
+Pip ▸ Based on your notes, here's what changed regarding replay capacity and the reasoning behind it:
 
-*   **What Changed:** You increased the `REPLAY_CAPACITY` from 5,000 to 15,000 [3].
-*   **Why:** The original 5,000-transition buffer was too small, as it "held barely 8 games" [3].
+*   **What changed:** You **increased the Replay Capacity to 15,000** [2].
+*   **Why:** This tuning change was part of the key tuning involved in training the DQN agent [2].
 
-It's interesting to note a side effect from that change! While increasing capacity helped learning, your notes also mention that raising it to 15,000 actually slowed down the run time because the sampling function was copying the entire deque [3, 4].
+However, your notes also point out a trade-off related to this change:
 
-Let me know if you want to draft a section in your README explaining this trade-off!
-  (13.17s)
+*   **The Catch:** Raising the replay capacity to 15,000 actually **cut the throughput** from about 200 to 114 decisions per second because the `ReplayMemory.sample()` function copies the entire replay deque on every sampling call [4].
+
+So, while increasing it was a tuning step that helped learning, it also made each run substantially slower [4].
+
+Let me know if you want to draft a section for your README explaining that trade-off!
+  (13.14s)
 
 you ▸ By the way, I got an A+ on the Pac-Man assignment.
   ↳ no notes lookup (conversation only)
-Pip ▸ That is awesome news! Huge congrats on the A+! 🎉 You should be really proud of that work.
+Pip ▸ That is awesome news! Huge congrats on the A+! 🎉 You clearly put in some serious work on that Ms. Pac-Man DQN agent.
 
-Since I can't remember things outside of this current chat session unless you save them, you might want to use `/save` right now to keep a record of that great success!
+If you're ready to move on, we could start drafting a reflection piece for that assignment, or maybe switch gears and look at how the concepts from the Pac-Man project (like state representation) might apply to the **nanoGPT** project?
 
-What's next on your list? Are we moving on to the nanoGPT documentation, or should we refine that README plan?
-  (8.09s)
+What's next on your mind?
+  (8.78s)
 
 you ▸ /exit
 
@@ -208,10 +219,10 @@ Q: What grade did I receive for the Ms. Pac-Man DQN assignment?
 retrieving passages, calling local Gemma, then checking the answer...
 A: INSUFFICIENT EVIDENCE: the retrieved passages do not state what the question asks for. The draft answer offered related information of a different kind instead, so it was withheld (see the answer check).
 
-answer check: does not answer it (asks for: What grade did I receive for the Ms. Pac-Man DQN assignment?; answer gives: The mean score for the trained agent in the Ms. Pac-Man DQN submission was 1032.0 [1]. In the table comparing the untrained baseline to the trained agent, the mean score over the five evaluation games for the trained agent was 1032.0 [1].)
-rejected draft: The mean score for the trained agent in the Ms. Pac-Man DQN submission was 1032.0 [1]. In the table comparing the untrained baseline to the trained agent, the mean score over the five evaluation games for the trained agent was 1032.0 [1].
-  retrieved but not cited: [1] Ms Pac-Man DQN README.md § Ms. Pac-Man DQN — Class 3 submission, [2] Ms Pac-Man DQN README.md § What I expected, and what actually happe, [3] Ms Pac-Man DQN README.md § Repository contents, [4] Ms Pac-Man DQN README.md § My three choices, [5] Ms Pac-Man DQN README.md § My three choices, [6] Ms Pac-Man DQN README.md § Training dashboard, [7] Ms Pac-Man DQN README.md § Two other hyperparameters I changed, and, [8] Ms Pac-Man DQN README.md § Earlier runs, reported honestly
+answer check: does not answer it (asks for: What grade did I receive for the Ms. Pac-Man DQN assignment?; answer gives: The trained agent achieved a mean score of 1032.0 over the five evaluation games [1][7].)
+rejected draft: The trained agent achieved a mean score of 1032.0 over the five evaluation games [1][7].
+  retrieved but not cited: [1] Ms Pac-Man DQN README.md § Ms. Pac-Man DQN — Class 3 submission, [2] Ms Pac-Man DQN README.md § My three choices, [3] Ms Pac-Man DQN README.md § My three choices, [4] Ms Pac-Man DQN README.md § Two other hyperparameters I changed, and, [5] Ms Pac-Man DQN README.md § What I expected, and what actually happe, [6] Ms Pac-Man DQN README.md § Training dashboard, [7] Ms Pac-Man DQN README.md § Earlier runs, reported honestly, [8] Ms Pac-Man DQN README.md § Repository contents
 Citation check: insufficient-evidence response (no claims to verify).
 
-status: insufficient · 5.19s total · 2270 prompt tok · 63 output tok · 33.9 tok/s · saved to runs/2026-09-29/ask.jsonl
-```
+status: insufficient · 3.37s total · 2270 prompt tok · 26 output tok · 33.9 tok/s · saved to runs/2026-09-29/ask.jsonl
+````

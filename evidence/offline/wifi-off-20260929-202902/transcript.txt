@@ -1,0 +1,331 @@
+
+════════ 0. Device and network state ════════
+Tue Sep 29 20:29:02 PDT 2026
+ProductName:		macOS ProductVersion:		26.6.2 BuildVersion:		25G83 
+chip: Apple M1 Pro, RAM: 16 GB
+Wi-Fi Power (en0): Off
+internet check: https://www.google.com is UNREACHABLE (expected for this demo)
+
+════════ 1. Restart the local Ollama server (weights load from local disk only) ════════
+$ ollama --version
+ollama version is 0.34.4
+$ ollama list
+NAME                    ID              SIZE      MODIFIED    
+gemma4:e4b-it-q4_K_M    dc35e8d9c606    6.6 GB    4 hours ago    
+embeddinggemma:300m     85462619ee72    621 MB    4 hours ago    
+
+════════ 2. Help (a fresh CLI process for every command) ════════
+$ ./wiki --help
+usage: wiki [-h] command ...
+
+Personal wiki CLI: a local Gemma harness over your own notes (chat, ask, search, ingest).
+
+positional arguments:
+  command
+    ingest    read sources in vault/raw, generate linked wiki notes, rebuild
+              indexes
+    search    show original matching passages (no model answer)
+    ask       standalone cited answer from your sources
+    chat      personal assistant with conversation context
+    eval      run the fixed ask-mode tests and write evidence cards
+    check     verify wiki links, headings and unchanged sources
+    rename    rename a wiki note and update every link to it
+    reindex   rebuild index.md, catalog and retrieval index (no generation)
+    status    model, runtime, memory and device information
+
+options:
+  -h, --help  show this help message and exit
+
+modes:
+  search  retrieval only: original passages + paths, never calls the language model
+  ask     standalone factual answer from retrieved raw passages, with citations,
+          or "INSUFFICIENT EVIDENCE" (no chat history, no persona)
+  chat    personal assistant with conversation memory; looks up notes only when needed
+
+examples:
+  wiki ingest vault/raw
+  wiki search "row level security"
+  wiki ask "What mean score did the trained Pac-Man agent get?"
+  wiki chat
+  wiki eval                 # run the 4 fixed ask-mode tests -> evidence/ask/
+  wiki check                # verify links, headings and unchanged sources
+
+configuration (environment variables):
+  WIKI_MODEL        chat/answer model   (default gemma4:e4b-it-q4_K_M)
+  WIKI_EMBED_MODEL  embedding model     (default embeddinggemma:300m)
+  OLLAMA_HOST       local Ollama server (default http://127.0.0.1:11434)
+
+required inputs: Ollama running locally with both models pulled (`ollama pull ...`);
+sources as .md/.txt files in vault/raw/. Instructions: prompts/*.md.
+
+════════ 3. Status: model, runtime, device ════════
+$ ./wiki status
+Model / runtime
+  ollama server http://127.0.0.1:11434: version 0.34.4
+  gemma4:e4b-it-q4_K_M: available locally
+Device
+  chip: Apple M1 Pro
+  memory bytes: 17179869184
+  macOS: 26.6.2
+  internet: unreachable
+
+════════ 4. Ingest all sources (unchanged -> no duplicates, no model call) ════════
+$ ./wiki ingest vault/raw
+── ingest · local · model gemma4:e4b-it-q4_K_M · internet: unreachable ──
+= Berkeley Network Tracker README.md: unchanged (sha256 3a234448db19), notes up to date - no model call
+= Custom nanoGPT LLM README.md: unchanged (sha256 8b446fde4201), notes up to date - no model call
+= Ms Pac-Man DQN README.md: unchanged (sha256 877f75d540bf), notes up to date - no model call
+  embeddings: 0 new passages embedded with embeddinggemma:300m
+  index.md, Source Catalog.md and retrieval index rebuilt (189 passages)
+  link check: all internal links and source references resolve
+
+════════ 5. Ingest one source with local Gemma (reviewed note -> draft goes to review queue) ════════
+$ ./wiki ingest vault/raw/Berkeley Network Tracker README.md --force
+── ingest · local · model gemma4:e4b-it-q4_K_M · internet: unreachable ──
++ Berkeley Network Tracker README.md: sending 20,278 chars to gemma4:e4b-it-q4_K_M ...
+  wiki/Projects/Berkeley Networking Tracker.md is marked reviewed: true, so it was NOT overwritten.
+  New draft (56.2s, same filename, no new notes) saved for comparison: data/review/Berkeley Networking Tracker.md
+  (rerun with --overwrite-reviewed to replace it)
+  embeddings: 0 new passages embedded with embeddinggemma:300m
+  index.md, Source Catalog.md and retrieval index rebuilt (189 passages)
+  link check: all internal links and source references resolve
+
+════════ 6. Vault check: links, headings, unchanged originals ════════
+$ ./wiki check
+vault: 3 raw sources, 17 wiki notes
+  ✓ raw/Berkeley Network Tracker README.md unchanged since ingest (sha256 3a234448db19)
+  ✓ raw/Custom nanoGPT LLM README.md unchanged since ingest (sha256 8b446fde4201)
+  ✓ raw/Ms Pac-Man DQN README.md unchanged since ingest (sha256 877f75d540bf)
+links: all internal links and #headings resolve
+
+════════ 7. The four ask-mode tests (evidence cards -> evidence/offline/wifi-off-20260929-202902/ask) ════════
+$ ./wiki eval --out evidence/offline/wifi-off-20260929-202902/ask
+test1: What mean evaluation score did the trained Ms. Pac-Man agent get, and what did the untrained baseline get?
+  The trained agent achieved a mean score of 1032.0 [1][4]. The untrained baseline had a mean score of 492.0 [1][4].
+
+test2: Why can't one person using my networking app see someone else's saved contacts?
+  The inability for one person to see another person's saved contacts is enforced by Row Level Security (RLS) policies in Postgres [1][5]. Specifically, every policy on the `contacts` table reduces to the predicate `auth.user_id() = user_id` [5]. This mechanism verifies the JWT signature issued by Managed Better Auth before Postgres processes the query, ensuring that each user can only see their own data [5]. This privacy is maintained even when both accounts interact with the same public Data API URL [7].
+
+test3: Which compute device did I train the Pac-Man agent and the nanoGPT models on, and how long did the training take for each?
+  The nanoGPT models were trained on Apple M1 Pro hardware using `DEVICE="cpu"` [4]. The training time for the nanoGPT models was 16.6 s for Experiment 1 and 18.7 s for Experiment 2 [3]. The Pac-Man agent was trained on Apple M1 Pro hardware using the PyTorch **MPS** backend [8]. The training for the Pac-Man agent took 4,388 seconds (~73 minutes) [8].
+
+test4: What grade did I receive for the Ms. Pac-Man DQN assignment?
+  INSUFFICIENT EVIDENCE: the retrieved passages do not state what the question asks for. The draft answer offered related information of a different kind instead, so it was withheld (see the answer check).
+
+wrote 4 evidence cards to evidence/offline/wifi-off-20260929-202902/ask
+
+════════ 8. Search mode: original passages only, no generated answer ════════
+$ ./wiki search row level security policies -k 3
+── search · local · model gemma4:e4b-it-q4_K_M · embed embeddinggemma:300m · internet: unreachable ──
+[1] wiki/Concepts/Row Level Security.md  lines 10-12  § Row Level Security  (hybrid score 0.0328 · bm25 16.126 · cos 0.7008)
+    # Row Level Security
+    
+    **General definition** *(written by Gemma from general knowledge, not taken from my sources)*: RLS policies restrict which rows in a database table a specific user can see or modify.
+
+[2] raw/Berkeley Network Tracker README.md  lines 161-188  § Authentication & Row Level Security  (hybrid score 0.0308 · bm25 13.791 · cos 0.5164)
+    ## Authentication & Row Level Security
+    
+    **Ownership rule:** every policy on `contacts` reduces to one predicate — `auth.user_id() = user_id` — where `auth.user_id()` reads the `sub` claim out of the JWT that Managed Better Auth issued when 
+    
+    ```sql
+    alter table contacts enable row level security;
+    
+    create policy contacts_select_own on contacts
+    ... (20 more lines; --full to show)
+
+[3] wiki/Concepts/Serverless Database.md  lines 20-24  § Related concepts  (hybrid score 0.0303 · bm25 13.752 · cos 0.4699)
+    ## Related concepts
+    
+    Added during review. Each link says why the two ideas are connected in my projects.
+    
+    - [[Row Level Security]]: Neon Postgres is where the Row Level Security policies are enforced. (source: [[Berkeley Network Tracker README#Technology stack|Technology stack]])
+
+search returns original passages only; no answer is generated.
+$ ./wiki search how long did training take --scope raw -k 3
+── search · local · model gemma4:e4b-it-q4_K_M · embed embeddinggemma:300m · internet: unreachable ──
+[1] raw/Ms Pac-Man DQN README.md  lines 157-178  § What the run actually cost  (hybrid score 0.0308 · bm25 2.0 · cos 0.2686)
+    ### What the run actually cost
+    
+    | | |
+    |---|---|
+    | Completed episodes | **800 of 800** (run completed; not interrupted) |
+    | Total decisions | **492,394** |
+    | Learning updates | **122,849** |
+    | Elapsed time | **4,388 seconds (~73 minutes)**, including periodic demonstrations |
+    ... (14 more lines; --full to show)
+
+[2] raw/Ms Pac-Man DQN README.md  lines 122-128  § Training dashboard  (hybrid score 0.0306 · bm25 2.498 · cos 0.2224)
+    ### Training dashboard
+    
+    ![Training dashboard](results/training_dashboard.png)
+    
+    Left: raw score per training game (pale) with the 25-game average (orange). Centre: mean update loss,
+    which rises as Q-values grow. Right: exploration, held constant at 0.10 after the 1,000-decision
+    random warm-up.
+
+[3] raw/Custom nanoGPT LLM README.md  lines 303-318  § Loss on the fixed panels  (hybrid score 0.0299 · bm25 1.553 · cos 0.2946)
+    | Run | Step | Training panel loss | Validation panel loss |
+    |---|---:|---:|---:|
+    | Setup check | 0 | 4.9263 | 4.9275 |
+    | Setup check | 5 | 4.3415 | 4.3228 |
+    | Setup check | 10 | 4.2076 | 4.2073 |
+    | **Experiment 1** | 0 | 4.9263 | 4.9275 |
+    | **Experiment 1** | 1,500 | 0.6821 | 0.7182 |
+    | **Experiment 1** | 3,000 | 0.6783 | 0.7061 |
+    ... (8 more lines; --full to show)
+
+search returns original passages only; no answer is generated.
+
+════════ 9. Chat mode checks ════════
+── chat · local · model gemma4:e4b-it-q4_K_M · embed embeddinggemma:300m · internet: unreachable ──
+Pip (local Gemma personal assistant). Commands: /notes <question> force a notes lookup · /save save last reply to drafts/
+          /clear reset conversation · /history show context size · /help · /exit
+
+you ▸ what can we do?
+  ↳ no notes lookup (conversation only)
+Pip ▸ Hey! I'm Pip, and I'm here to help you with your Agentic AI course and those project notes. Think of me as your study buddy! 😊
+
+Since I run locally, I can't browse the internet or run code, but here’s what I *can* do for you:
+
+*   **Brainstorm & Draft:** Need to outline a README? Draft a reflection on your DQN agent? We can whip up text together.
+*   **Wiki Lookups:** I can pull facts from your personal wiki on projects like the Ms. Pac-Man DQN, your nanoGPT model, or the Networking Tracker.
+*   **Refine & Rewrite:** If you have rough notes, I can help make them clearer, shorter, or turn them into bullet points.
+*   **Remember Context:** I'll remember what we talked about in this chat so follow-ups are super easy!
+
+Also, you can use some quick commands:
+*   `/notes <question>` to force a wiki lookup.
+*   `/save` to save my last reply as a draft.
+*   `/clear` to start fresh.
+*   `/help` to see this list again!
+
+What are you working on right now? Maybe we can look at the DQN agent or plan out the next steps for nanoGPT?
+  (17.19s)
+
+you ▸ what can you help me with?
+  ↳ no notes lookup (conversation only)
+Pip ▸ Since you asked again, I'll give you a slightly different angle! I'm here to support your studying and project documentation for this Agentic AI course.
+
+Basically, I help you turn messy thoughts into organized, clear study material.
+
+Here are some concrete things we could tackle today:
+
+*   **Project Deep Dives:** We could discuss the components of your projects. For example, we could talk about the **Deep Q-Network** components of the Ms. Pac-Man project, or how the **Replay Memory** works.
+*   **Concept Clarification:** If you're struggling with a concept like **Exploration** in RL, or how **Attention** works in LLMs, we can brainstorm ways to explain it.
+*   **Documentation Polish:** Are you writing a README for your **Custom nanoGPT LLM**? I can help you structure it or rewrite confusing sections.
+*   **Planning:** If you have a big assignment coming up, we can outline a study plan or a project roadmap!
+
+Just let me know which project or concept is giving you trouble! 💡
+  (14.28s)
+
+you ▸ Draft a short plan for how I should prepare my next class assignment README.
+  ↳ no notes lookup (conversation only)
+Pip ▸ Sounds like a plan! A good README is key for any project. To make this useful, I'm going to suggest a general structure. Since I don't know what the assignment is, this is a suggestion, but we can tailor it once you tell me the project!
+
+Here is a suggested outline for your README:
+
+### 📝 README Draft Plan
+
+**1. Project Overview (The "Elevator Pitch")**
+*   **Goal:** One or two sentences explaining *what* the project does and *why* it matters. (e.g., "This project implements a DQN agent to learn optimal movement in the Ms. Pac-Man environment.")
+*   **Tech Stack:** Quick list of the main tools used (e.g., PyTorch, Python, NumPy).
+
+**2. Core Concepts & Architecture**
+*   **The "How":** This is where you explain the AI/Engineering heart of it.
+    *   *If RL:* Briefly explain the agent (DQN, etc.), state the environment, and mention the core learning mechanism (e.g., Q-value updates).
+    *   *If LLM:* Explain the model structure (nanoGPT, Transformer basics) and the training data.
+*   **Key Components:** Use bullet points to list the major parts (e.g., "State Representation," "Action Space," "Reward Function").
+
+**3. Implementation Details (The Meat)**
+*   **Data/Models:** If applicable, mention the size of the dataset or the architecture depth.
+*   **Challenges & Solutions:** This is great for showing critical thinking. What was hard? How did you solve it? (e.g., "Initial convergence issues were solved by tuning the Learning Rate.")
+
+**4. How to Run It**
+*   **Prerequisites:** List required software/libraries (e.g., `pip install -r requirements.txt`).
+*   **Execution:** Clear, simple command to start the project.
+
+How does that look as a starting framework? If you tell me which project this is for, I can make the suggestions much more specific!
+  (21.64s)
+
+you ▸ make that shorter
+  ↳ no notes lookup (conversation only)
+Pip ▸ No problem! Let's strip that down to the absolute essentials. Speed and clarity are the goal here. 🚀
+
+Here is the super-condensed README structure:
+
+### ⚡️ Ultra-Short README Plan
+
+**1. 🎯 Goal:**
+*   One sentence stating *what* the project is and *what* it achieves.
+
+**2. ⚙️ Architecture Snapshot:**
+*   Bullet points listing the main technical parts (e.g., "DQN Agent," "Replay Memory," "PyTorch Backend").
+
+**3. 🚧 Key Takeaways / Challenges:**
+*   A very brief section on the biggest hurdle and how you overcame it. (Shows you didn't just copy code!)
+
+**4. ▶️ Run Instructions:**
+*   Simple `pip install` command and the single command to run it.
+
+Does that hit the sweet spot for brevity, or should I pare it down even further? 😊
+  (11.88s)
+
+you ▸ What did my Pac-Man project change about replay capacity, and why?
+  ↳ notes lookup (router query: "Pac-Man DQN replay capacity changes"): [1] wiki/Concepts/Replay Memory.md § In my projects, [2] wiki/Projects/Ms Pac-Man DQN.md § Ms Pac-Man DQN, [3] wiki/Concepts/Deep Q-Network.md § Related concepts, [4] raw/Ms Pac-Man DQN README.md § One limitation
+Pip ▸ Based on your notes, here's what changed regarding replay capacity and the reasoning behind it:
+
+*   **What changed:** You **increased the Replay Capacity to 15,000** [2].
+*   **Why:** This tuning change was part of the key tuning involved in training the DQN agent [2].
+
+However, your notes also point out a trade-off related to this change:
+
+*   **The Catch:** Raising the replay capacity to 15,000 actually **cut the throughput** from about 200 to 114 decisions per second because the `ReplayMemory.sample()` function copies the entire replay deque on every sampling call [4].
+
+So, while increasing it was a tuning step that helped learning, it also made each run substantially slower [4].
+
+Let me know if you want to draft a section for your README explaining that trade-off!
+  (13.14s)
+
+you ▸ By the way, I got an A+ on the Pac-Man assignment.
+  ↳ no notes lookup (conversation only)
+Pip ▸ That is awesome news! Huge congrats on the A+! 🎉 You clearly put in some serious work on that Ms. Pac-Man DQN agent.
+
+If you're ready to move on, we could start drafting a reflection piece for that assignment, or maybe switch gears and look at how the concepts from the Pac-Man project (like state representation) might apply to the **nanoGPT** project?
+
+What's next on your mind?
+  (8.78s)
+
+you ▸ /exit
+
+════════ 10. Ask after chat: the A+ claim made in chat is NOT evidence ════════
+$ ./wiki ask What grade did I receive for the Ms. Pac-Man DQN assignment?
+── ask · local · model gemma4:e4b-it-q4_K_M · embed embeddinggemma:300m · internet: unreachable ──
+Q: What grade did I receive for the Ms. Pac-Man DQN assignment?
+
+retrieving passages, calling local Gemma, then checking the answer...
+A: INSUFFICIENT EVIDENCE: the retrieved passages do not state what the question asks for. The draft answer offered related information of a different kind instead, so it was withheld (see the answer check).
+
+answer check: does not answer it (asks for: What grade did I receive for the Ms. Pac-Man DQN assignment?; answer gives: The trained agent achieved a mean score of 1032.0 over the five evaluation games [1][7].)
+rejected draft: The trained agent achieved a mean score of 1032.0 over the five evaluation games [1][7].
+  retrieved but not cited: [1] Ms Pac-Man DQN README.md § Ms. Pac-Man DQN — Class 3 submission, [2] Ms Pac-Man DQN README.md § My three choices, [3] Ms Pac-Man DQN README.md § My three choices, [4] Ms Pac-Man DQN README.md § Two other hyperparameters I changed, and, [5] Ms Pac-Man DQN README.md § What I expected, and what actually happe, [6] Ms Pac-Man DQN README.md § Training dashboard, [7] Ms Pac-Man DQN README.md § Earlier runs, reported honestly, [8] Ms Pac-Man DQN README.md § Repository contents
+Citation check: insufficient-evidence response (no claims to verify).
+
+status: insufficient · 3.37s total · 2270 prompt tok · 26 output tok · 33.9 tok/s · saved to runs/2026-09-29/ask.jsonl
+
+════════ 11. Measured memory after the run ════════
+$ ./wiki status
+Model / runtime
+  ollama server http://127.0.0.1:11434: version 0.34.4
+  gemma4:e4b-it-q4_K_M: available locally
+  loaded: gemma4:e4b-it-q4_K_M, context 8192
+  loaded: embeddinggemma:300m, context 2048
+  model runner pid 60549 (blob 370c2879f176): resident 6,919 MB, private footprint 2391 MB
+  model runner pid 60540 (blob 0800cbac9c20): resident 601 MB, private footprint 105 MB
+Device
+  chip: Apple M1 Pro
+  memory bytes: 17179869184
+  macOS: 26.6.2
+  internet: unreachable
+
+════════ done ════════
+saved: evidence/offline/wifi-off-20260929-202902/transcript.txt and evidence/offline/wifi-off-20260929-202902/ask/
+Tue Sep 29 20:32:43 PDT 2026

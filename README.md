@@ -9,21 +9,20 @@ internet**. It has three modes: `chat` (personal assistant), `ask` (cited factua
 
 | What | Result | Link |
 |---|---|---|
-| 4 ask-mode tests, offline | 3 grounded, cited answers + 1 correct INSUFFICIENT EVIDENCE, with Wi-Fi off and again with the final code | [final-code cards](evidence/offline/sandbox-final-code-20260929-202152/ask/) · [Wi-Fi-off cards](evidence/offline/wifi-off-20260929-194803/ask/) |
-| Chat / search mode checks, offline | 9 of 9 behave as specified (Wi-Fi-off run and final-code run) | [mode_checks.md](evidence/mode_checks.md) |
-| Offline demo transcripts | ingest, help, status, 4 tests, search, chat, ask-after-chat | [Wi-Fi off](evidence/offline/wifi-off-20260929-194803/transcript.txt) · [final code, network sandboxed](evidence/offline/sandbox-final-code-20260929-202152/transcript.txt) |
+| 4 ask-mode tests, **Wi-Fi off, final code** | 3 grounded, cited answers + 1 correct INSUFFICIENT EVIDENCE | [evidence cards](evidence/offline/wifi-off-20260929-202902/ask/) |
+| Chat / search mode checks, **Wi-Fi off, final code** | 9 of 9 behave as specified | [mode_checks.md](evidence/mode_checks.md) |
+| Offline demo transcript | `Wi-Fi Power (en0): Off`; ingest, help, status, 4 tests, search, chat, ask-after-chat | [transcript.txt](evidence/offline/wifi-off-20260929-202902/transcript.txt) · [all runs](#6-offline-demonstration) |
 | Obsidian screenshots | note, index, graph, source catalog, local graph | [evidence/obsidian/](evidence/obsidian/) |
 | A real failure and its fix | Test 4 answered a *grade* question with a *score* → added an answer check | [dev_runs/](evidence/dev_runs/) |
 | A second failure, found by re-testing | after a wiki-only cleanup, reshuffled passages made Gemma miss a table value in Test 3 → per-scope keyword statistics + passages shown in reading order | [§8](#8-reflection) |
 | Retrieval before/after | BM25 missed Test 3's passages → hybrid retrieval found them | [v1](evidence/retrieval/v1_bm25_baseline.txt) · [v2](evidence/retrieval/v2_hybrid_final.txt) · [v3 final](evidence/retrieval/v3_final.txt) |
 | Memory and timing | ingest peak +7.2 GB (14.5 of 16 GB); new ask question 14–21 s | [performance](evidence/performance/memory_and_timing.txt) |
 
-> **About the offline proof:** the full demo ran with **Wi-Fi switched off**
-> (`Wi-Fi Power (en0): Off`, google.com unreachable, `internet: unreachable` on every command).
-> After that I improved the wiki and made two small retrieval changes (§8), so the
-> **final code** was re-run end to end with the CLI and the Ollama server inside a macOS sandbox
-> that blocks all non-localhost network traffic. Both runs pass all four tests and all nine mode
-> checks. Every run is listed in [§6](#6-offline-demonstration).
+> **About the offline proof:** the final code (commit `328e3f2`) ran the whole demo with
+> **Wi-Fi switched off** (`Wi-Fi Power (en0): Off`, google.com unreachable, `internet: unreachable`
+> on every command). Ollama was restarted first, and each command is a fresh CLI process. The
+> same code in a no-network macOS sandbox gave byte-identical answers, passages and citations.
+> Every run, including the failed ones, is listed in [§6](#6-offline-demonstration).
 
 ---
 
@@ -289,9 +288,10 @@ All runs, oldest first (each folder has `transcript.txt`, `ask/` cards and the O
 | [`wifi-off-…194722`](evidence/offline/wifi-off-20260929-194722/transcript.txt) | `376dcee` | **Wi-Fi off** | stopped during step 5 and restarted 41 s later; incomplete | n/a |
 | [`wifi-off-…194803`](evidence/offline/wifi-off-20260929-194803/transcript.txt) | `376dcee` | **Wi-Fi off** (`Wi-Fi Power (en0): Off`) | 4/4, identical to the first run | 9/9 |
 | [`sandbox-final-…201555`](evidence/offline/sandbox-final-20260929-201555/transcript.txt) | after the wiki cleanup + per-scope BM25 | sandbox | **3/4**: Test 3 said the nanoGPT time was "not specified" although it was in passage [2] | 9/9 |
-| [`sandbox-final-code-…202152`](evidence/offline/sandbox-final-code-20260929-202152/transcript.txt) | **final** (+ reading order) | sandbox | 4/4 | 9/9 |
+| [`sandbox-final-code-…202152`](evidence/offline/sandbox-final-code-20260929-202152/transcript.txt) | **final** `328e3f2` (+ reading order) | sandbox | 4/4 | 9/9 |
+| [`wifi-off-…202902`](evidence/offline/wifi-off-20260929-202902/transcript.txt) | **final** `328e3f2` | **Wi-Fi off** | **4/4**, identical to the sandbox run | **9/9** |
 
-Wi-Fi-off run, which I launched with `./scripts/offline_demo.sh`:
+Earlier Wi-Fi-off run (`wifi-off-…194803`, previous code), launched with `./scripts/offline_demo.sh`:
 - It took 14 minutes instead of ~6 because **the Mac went into idle sleep on battery** at
   19:50:26 for 626 s (macOS `pmset -g log`), in the middle of the first chat reply. That turn
   shows `647.57s`; its first token had arrived after 2.1 s, and every other chat turn took 8–19 s.
@@ -307,11 +307,11 @@ LABEL=sandbox-final-code caffeinate -i sandbox-exec -f scripts/no-internet.sb ./
 - The Ollama server is restarted *inside* the sandbox, so neither the CLI nor the model server could reach the internet.
 - Every command logs `internet: unreachable`.
 
-To repeat the Wi-Fi-off run with the final code, turn Wi-Fi off, plug in, and run `./scripts/offline_demo.sh`.
+The final Wi-Fi-off run (20:29–20:37 PDT) was plugged in, and its chat turns took 8–22 s.
 
 ## 7. Evidence
 
-### Four ask-mode tests (final code, offline, `gemma4:e4b-it-q4_K_M`, local)
+### Four ask-mode tests (final code, Wi-Fi off, `gemma4:e4b-it-q4_K_M`, local)
 
 Expectations were written first in [`evals/questions.json`](evals/questions.json). Each card
 contains:
@@ -325,12 +325,12 @@ contains:
 
 | Test | Question (abridged) | Retrieved expected source? | Answer | Citations check out? | Card |
 |---|---|---|---|---|---|
-| 1 direct | Trained vs untrained mean score | yes (intro table and per-seed table) | "trained 1032.0 [1][4]… baseline 492.0 [1][4]" | yes, both passages state both numbers | [test1](evidence/offline/sandbox-final-code-20260929-202152/ask/test1.md) |
-| 2 reworded | Why can't one person see someone else's contacts? | yes, **rank 5** | Row Level Security, `auth.user_id() = user_id`, JWT verified before Postgres, same Data API URL for both accounts [1][5][7] | yes | [test2](evidence/offline/sandbox-final-code-20260929-202152/ask/test2.md) |
-| 3 two sources | Compute device + training time for Pac-Man and nanoGPT | yes, both | M1 Pro `DEVICE="cpu"`, 16.6 s / 18.7 s [3][4]; M1 Pro + PyTorch MPS, 4,388 s [8] | yes (omits that 4,388 s includes demo recording) | [test3](evidence/offline/sandbox-final-code-20260929-202152/ask/test3.md) |
-| 4 unanswerable | What grade did I receive for Pac-Man? | n/a (Pac-Man passages retrieved, none has a grade) | **INSUFFICIENT EVIDENCE**, with the rejected draft shown | n/a | [test4](evidence/offline/sandbox-final-code-20260929-202152/ask/test4.md) |
+| 1 direct | Trained vs untrained mean score | yes (intro table and per-seed table) | "trained 1032.0 [1][4]… baseline 492.0 [1][4]" | yes, both passages state both numbers | [test1](evidence/offline/wifi-off-20260929-202902/ask/test1.md) |
+| 2 reworded | Why can't one person see someone else's contacts? | yes, **rank 5** | Row Level Security, `auth.user_id() = user_id`, JWT verified before Postgres, same Data API URL for both accounts [1][5][7] | yes | [test2](evidence/offline/wifi-off-20260929-202902/ask/test2.md) |
+| 3 two sources | Compute device + training time for Pac-Man and nanoGPT | yes, both | M1 Pro `DEVICE="cpu"`, 16.6 s / 18.7 s [3][4]; M1 Pro + PyTorch MPS, 4,388 s [8] | yes (omits that 4,388 s includes demo recording) | [test3](evidence/offline/wifi-off-20260929-202902/ask/test3.md) |
+| 4 unanswerable | What grade did I receive for Pac-Man? | n/a (Pac-Man passages retrieved, none has a grade) | **INSUFFICIENT EVIDENCE**, with the rejected draft shown | n/a | [test4](evidence/offline/wifi-off-20260929-202902/ask/test4.md) |
 
-The Wi-Fi-off cards ([test1](evidence/offline/wifi-off-20260929-194803/ask/test1.md) · [test2](evidence/offline/wifi-off-20260929-194803/ask/test2.md) · [test3](evidence/offline/wifi-off-20260929-194803/ask/test3.md) · [test4](evidence/offline/wifi-off-20260929-194803/ask/test4.md))
+The earlier Wi-Fi-off cards ([test1](evidence/offline/wifi-off-20260929-194803/ask/test1.md) · [test2](evidence/offline/wifi-off-20260929-194803/ask/test2.md) · [test3](evidence/offline/wifi-off-20260929-194803/ask/test3.md) · [test4](evidence/offline/wifi-off-20260929-194803/ask/test4.md))
 show the same outcomes from the previous code version, with different citation numbers because passages were then shown in rank order.
 Development runs, including the failed first version of Test 4, are in [`evidence/dev_runs/`](evidence/dev_runs/).
 
