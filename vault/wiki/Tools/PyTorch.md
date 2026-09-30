@@ -5,10 +5,11 @@ generated_by: "gemma4:e4b-it-q4_K_M"
 generated_at: "2026-09-29T16:39:54-07:00"
 reviewed: true
 reviewed_at: "2026-09-29"
+definition_source: model general knowledge (not from sources)
 ---
 # PyTorch
 
-A popular open-source machine learning framework used for building and training neural networks.
+**General definition** *(written by Gemma from general knowledge, not taken from my sources)*: A popular open-source machine learning framework used for building and training neural networks.
 
 ## In my projects
 
@@ -16,6 +17,12 @@ A popular open-source machine learning framework used for building and training 
 <!-- from:ms-pac-man-dqn-readme -->
 - [[Ms Pac-Man DQN]]: The run utilized the PyTorch MPS backend on the Apple M1 Pro hardware. (source: [[Ms Pac-Man DQN README#What the run actually cost|What the run actually cost]])
 <!-- /from:ms-pac-man-dqn-readme -->
+
+## Related concepts
+
+Added during review. Each link says why the two ideas are connected in my projects.
+
+- [[Deep Q-Network]]: PyTorch (MPS backend) ran the Pac-Man Deep Q-Network training. (source: [[Ms Pac-Man DQN README#What the run actually cost|What the run actually cost]])
 
 ## Source
 

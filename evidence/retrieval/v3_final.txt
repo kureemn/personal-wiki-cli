@@ -1,0 +1,48 @@
+Retrieval v3 (final code): v2 + BM25 statistics computed per scope (ask uses raw/ only),
+then the selected passages are shown to Gemma in reading order (grouped by source, document order).
+Columns: rank after fusion -> position [n] the model sees.
+
+## test1 What mean evaluation score did the trained Ms. Pac-Man agent get, and what did the untrained baseline get?
+   expected: ['raw/Ms Pac-Man DQN README.md']
+  [1] (rank #2, bm25 #1, dense #4) Ms Pac-Man DQN README.md#L1-13                   'Ms. Pac-Man DQN — Class 3 submission'
+  [2] (rank #7, bm25 #9, dense #6) Ms Pac-Man DQN README.md#L46-51                  'My three choices'
+  [3] (rank #3, bm25 #3, dense #2) Ms Pac-Man DQN README.md#L70-83                  'What I expected, and what actually happene'
+  [4] (rank #1, bm25 #2, dense #1) Ms Pac-Man DQN README.md#L102-120                'All five evaluation scores'
+  [5] (rank #5, bm25 #4, dense #8) Ms Pac-Man DQN README.md#L130-143                'Gameplay'
+  [6] (rank #4, bm25 #6, dense #3) Ms Pac-Man DQN README.md#L145-155                'Gameplay'
+  [7] (rank #6, bm25 #7, dense #5) Ms Pac-Man DQN README.md#L180-194                'Earlier runs, reported honestly'
+  [8] (rank #8, bm25 #5, dense #13) Ms Pac-Man DQN README.md#L255-263                'One next experiment'
+
+## test2 Why can't one person using my networking app see someone else's saved contacts?
+   expected: ['raw/Berkeley Network Tracker README.md']
+  [1] (rank #1, bm25 #1, dense #2) Berkeley Network Tracker README.md#L1-8          'Berkeley Networking Tracker'
+  [2] (rank #2, bm25 #7, dense #1) Berkeley Network Tracker README.md#L41-46        'Walkthrough & screenshots'
+  [3] (rank #6, bm25 #6, dense #12) Berkeley Network Tracker README.md#L98-101       'Architecture'
+  [4] (rank #4, bm25 #5, dense #8) Berkeley Network Tracker README.md#L102-104      'Architecture'
+  [5] (rank #5, bm25 #3, dense #11) Berkeley Network Tracker README.md#L161-188      'Authentication & Row Level Security'
+  [6] (rank #7, bm25 #15, dense #4) Berkeley Network Tracker README.md#L196-203      'Verifying it yourself'
+  [7] (rank #8, bm25 #14, dense #5) Berkeley Network Tracker README.md#L262-264      'Grading evidence'
+  [8] (rank #3, bm25 #8, dense #3) Berkeley Network Tracker README.md#L277-283      'Known limitations & next steps'
+
+## test3 Which compute device did I train the Pac-Man agent and the nanoGPT models on, and how long did the training take for each?
+   expected: ['raw/Ms Pac-Man DQN README.md', 'raw/Custom nanoGPT LLM README.md']
+  [1] (rank #3, bm25 #19, dense #2) Custom nanoGPT LLM README.md#L1-13               'Building a Custom LLM with nanoGPT: Class '
+  [2] (rank #8, bm25 #31, dense #6) Custom nanoGPT LLM README.md#L142-153            'My three choices and predictions'
+  [3] (rank #2, bm25 #12, dense #5) Custom nanoGPT LLM README.md#L260-271            'The runs'
+  [4] (rank #1, bm25 #9, dense #1) Custom nanoGPT LLM README.md#L272-280            'The runs'
+  [5] (rank #7, bm25 #20, dense #12) Custom nanoGPT LLM README.md#L809-818            'What I learned'
+  [6] (rank #4, bm25 #15, dense #7) Ms Pac-Man DQN README.md#L15-36                  'Open and run the notebook'
+  [7] (rank #6, bm25 #8, dense #21) Ms Pac-Man DQN README.md#L46-51                  'My three choices'
+  [8] (rank #5, bm25 #24, dense #3) Ms Pac-Man DQN README.md#L157-178                'What the run actually cost'
+
+## test4 What grade did I receive for the Ms. Pac-Man DQN assignment?
+   expected: (none)
+  [1] (rank #1, bm25 #1, dense #4) Ms Pac-Man DQN README.md#L1-13                   'Ms. Pac-Man DQN — Class 3 submission'
+  [2] (rank #4, bm25 #6, dense #5) Ms Pac-Man DQN README.md#L46-51                  'My three choices'
+  [3] (rank #5, bm25 #5, dense #9) Ms Pac-Man DQN README.md#L52-52                  'My three choices'
+  [4] (rank #7, bm25 #2, dense #14) Ms Pac-Man DQN README.md#L54-68                  'Two other hyperparameters I changed, and w'
+  [5] (rank #2, bm25 #8, dense #2) Ms Pac-Man DQN README.md#L85-98                  'What I expected, and what actually happene'
+  [6] (rank #6, bm25 #4, dense #11) Ms Pac-Man DQN README.md#L122-128                'Training dashboard'
+  [7] (rank #8, bm25 #19, dense #1) Ms Pac-Man DQN README.md#L180-194                'Earlier runs, reported honestly'
+  [8] (rank #3, bm25 #3, dense #8) Ms Pac-Man DQN README.md#L274-284                'Repository contents'
+

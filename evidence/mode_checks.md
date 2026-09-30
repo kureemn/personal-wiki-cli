@@ -4,7 +4,8 @@ Run: `./scripts/offline_demo.sh` with **Wi-Fi switched off** (`Wi-Fi Power (en0)
 19:48–20:02 PDT, with Gemma `gemma4:e4b-it-q4_K_M` and `embeddinggemma:300m` in Ollama 0.34.4, local
 execution only, internet unreachable (every header line below says so). Full transcript:
 [`offline/wifi-off-20260929-194803/transcript.txt`](offline/wifi-off-20260929-194803/transcript.txt). The same checks passed in the earlier
-[sandboxed no-network run](offline/sandbox-no-network-20260929-170024/transcript.txt).
+[sandboxed no-network run](offline/sandbox-no-network-20260929-170024/transcript.txt) and again with the
+[final code](offline/sandbox-final-code-20260929-202152/transcript.txt).
 
 The first chat turn shows `647.57s` because the Mac went into idle sleep on battery for 626 s
 during that reply (macOS power log). Its first token arrived after 2.1 s, and the other turns took 8–19 s.

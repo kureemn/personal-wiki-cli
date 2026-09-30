@@ -2485,3 +2485,306 @@ srv  update_slots: all slots are idle
 [GIN] 2026/09/29 - 20:02:12 | 200 |    1.196792ms |       127.0.0.1 | GET      "/api/tags"
 [GIN] 2026/09/29 - 20:02:12 | 200 |     839.792µs |       127.0.0.1 | GET      "/api/ps"
 time=2026-09-29T20:03:43.348-07:00 level=INFO source=model_recommendations.go:177 msg="model recommendations cache sleep scheduled" wait=3h54m14.672879959s consecutive_failures=0
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.017 (1/59) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 2399846013224
+slot launch_slot_: id  0 | task 16 | processing task, is_child = 0
+slot   operator(): id  0 | task 16 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 59
+slot   operator(): id  0 | task 16 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 16 | stop processing: n_tokens = 59, truncated = 0
+srv  update_slots: all slots are idle
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.032 (3/93) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 2400623215131
+slot launch_slot_: id  0 | task 18 | processing task, is_child = 0
+slot   operator(): id  0 | task 18 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 93
+slot   operator(): id  0 | task 18 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 18 | stop processing: n_tokens = 93, truncated = 0
+srv  update_slots: all slots are idle
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.189 (10/53) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.189 (> 0.100 thold), f_keep = 0.108
+slot launch_slot_: id  0 | task 20 | processing task, is_child = 0
+slot   operator(): id  0 | task 20 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 53
+slot   operator(): id  0 | task 20 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 20 | stop processing: n_tokens = 53, truncated = 0
+srv  update_slots: all slots are idle
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.053 (3/57) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 2400623285772
+slot launch_slot_: id  0 | task 22 | processing task, is_child = 0
+slot   operator(): id  0 | task 22 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 57
+slot   operator(): id  0 | task 22 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 22 | stop processing: n_tokens = 57, truncated = 0
+srv  update_slots: all slots are idle
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.057 (3/53) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 2400623308838
+slot launch_slot_: id  0 | task 24 | processing task, is_child = 0
+slot   operator(): id  0 | task 24 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 53
+slot   operator(): id  0 | task 24 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 24 | stop processing: n_tokens = 53, truncated = 0
+srv  update_slots: all slots are idle
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.051 (3/59) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 2400623332724
+slot launch_slot_: id  0 | task 26 | processing task, is_child = 0
+slot   operator(): id  0 | task 26 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 59
+slot   operator(): id  0 | task 26 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 26 | stop processing: n_tokens = 59, truncated = 0
+srv  update_slots: all slots are idle
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.056 (3/54) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 2400623355152
+slot launch_slot_: id  0 | task 28 | processing task, is_child = 0
+slot   operator(): id  0 | task 28 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 54
+slot   operator(): id  0 | task 28 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 28 | stop processing: n_tokens = 54, truncated = 0
+srv  update_slots: all slots are idle
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.016 (3/190) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 2400623378695
+slot launch_slot_: id  0 | task 30 | processing task, is_child = 0
+slot   operator(): id  0 | task 30 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 190
+slot   operator(): id  0 | task 30 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 30 | stop processing: n_tokens = 190, truncated = 0
+srv  update_slots: all slots are idle
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.046 (3/65) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 2400623451929
+slot launch_slot_: id  0 | task 32 | processing task, is_child = 0
+slot   operator(): id  0 | task 32 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 65
+slot   operator(): id  0 | task 32 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 32 | stop processing: n_tokens = 65, truncated = 0
+srv  update_slots: all slots are idle
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.023 (3/131) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 2400623475503
+slot launch_slot_: id  0 | task 34 | processing task, is_child = 0
+slot   operator(): id  0 | task 34 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 131
+slot   operator(): id  0 | task 34 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 34 | stop processing: n_tokens = 131, truncated = 0
+srv  update_slots: all slots are idle
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.025 (3/121) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 2400623504876
+slot launch_slot_: id  0 | task 36 | processing task, is_child = 0
+slot   operator(): id  0 | task 36 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 121
+slot   operator(): id  0 | task 36 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 36 | stop processing: n_tokens = 121, truncated = 0
+srv  update_slots: all slots are idle
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.169 (10/59) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.169 (> 0.100 thold), f_keep = 0.083
+slot launch_slot_: id  0 | task 38 | processing task, is_child = 0
+slot   operator(): id  0 | task 38 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 59
+slot   operator(): id  0 | task 38 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 38 | stop processing: n_tokens = 59, truncated = 0
+srv  update_slots: all slots are idle
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.061 (3/49) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 2400623549790
+slot launch_slot_: id  0 | task 40 | processing task, is_child = 0
+slot   operator(): id  0 | task 40 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 49
+slot   operator(): id  0 | task 40 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 40 | stop processing: n_tokens = 49, truncated = 0
+srv  update_slots: all slots are idle
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.092 (8/87) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 2400623569092
+slot launch_slot_: id  0 | task 42 | processing task, is_child = 0
+slot   operator(): id  0 | task 42 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 87
+slot   operator(): id  0 | task 42 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 42 | stop processing: n_tokens = 87, truncated = 0
+srv  update_slots: all slots are idle
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.015 (3/197) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 2400623591134
+slot launch_slot_: id  0 | task 44 | processing task, is_child = 0
+slot   operator(): id  0 | task 44 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 197
+slot   operator(): id  0 | task 44 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 44 | stop processing: n_tokens = 197, truncated = 0
+srv  update_slots: all slots are idle
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.022 (3/134) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 2400623654531
+slot launch_slot_: id  0 | task 46 | processing task, is_child = 0
+slot   operator(): id  0 | task 46 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 134
+slot   operator(): id  0 | task 46 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 46 | stop processing: n_tokens = 134, truncated = 0
+srv  update_slots: all slots are idle
+[GIN] 2026/09/29 - 20:15:04 | 200 |  935.433291ms |       127.0.0.1 | POST     "/api/embed"
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.059 (3/51) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 2400623683422
+slot launch_slot_: id  0 | task 48 | processing task, is_child = 0
+slot   operator(): id  0 | task 48 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 51
+slot   operator(): id  0 | task 48 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 48 | stop processing: n_tokens = 51, truncated = 0
+srv  update_slots: all slots are idle
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.042 (3/72) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 2400623718070
+slot launch_slot_: id  0 | task 50 | processing task, is_child = 0
+slot   operator(): id  0 | task 50 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 72
+slot   operator(): id  0 | task 50 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 50 | stop processing: n_tokens = 72, truncated = 0
+srv  update_slots: all slots are idle
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.057 (3/53) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 2400623739944
+slot launch_slot_: id  0 | task 52 | processing task, is_child = 0
+slot   operator(): id  0 | task 52 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 53
+slot   operator(): id  0 | task 52 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 52 | stop processing: n_tokens = 53, truncated = 0
+srv  update_slots: all slots are idle
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.033 (3/92) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 2400623757250
+slot launch_slot_: id  0 | task 54 | processing task, is_child = 0
+slot   operator(): id  0 | task 54 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 92
+slot   operator(): id  0 | task 54 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 54 | stop processing: n_tokens = 92, truncated = 0
+srv  update_slots: all slots are idle
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.172 (10/58) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.172 (> 0.100 thold), f_keep = 0.109
+slot launch_slot_: id  0 | task 56 | processing task, is_child = 0
+slot   operator(): id  0 | task 56 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 58
+slot   operator(): id  0 | task 56 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 56 | stop processing: n_tokens = 58, truncated = 0
+srv  update_slots: all slots are idle
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.054 (3/56) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 2400623796657
+slot launch_slot_: id  0 | task 58 | processing task, is_child = 0
+slot   operator(): id  0 | task 58 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 56
+slot   operator(): id  0 | task 58 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 58 | stop processing: n_tokens = 56, truncated = 0
+srv  update_slots: all slots are idle
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.034 (3/89) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 2400623815113
+slot launch_slot_: id  0 | task 60 | processing task, is_child = 0
+slot   operator(): id  0 | task 60 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 89
+slot   operator(): id  0 | task 60 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 60 | stop processing: n_tokens = 89, truncated = 0
+srv  update_slots: all slots are idle
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.036 (3/84) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 2400623836622
+slot launch_slot_: id  0 | task 62 | processing task, is_child = 0
+slot   operator(): id  0 | task 62 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 84
+slot   operator(): id  0 | task 62 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 62 | stop processing: n_tokens = 84, truncated = 0
+srv  update_slots: all slots are idle
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.017 (3/176) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 2400623859186
+slot launch_slot_: id  0 | task 64 | processing task, is_child = 0
+slot   operator(): id  0 | task 64 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 176
+slot   operator(): id  0 | task 64 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 64 | stop processing: n_tokens = 176, truncated = 0
+srv  update_slots: all slots are idle
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.057 (3/53) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 2400623896034
+slot launch_slot_: id  0 | task 66 | processing task, is_child = 0
+slot   operator(): id  0 | task 66 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 53
+slot   operator(): id  0 | task 66 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 66 | stop processing: n_tokens = 53, truncated = 0
+srv  update_slots: all slots are idle
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.041 (3/74) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 2400623912581
+slot launch_slot_: id  0 | task 68 | processing task, is_child = 0
+slot   operator(): id  0 | task 68 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 74
+slot   operator(): id  0 | task 68 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 68 | stop processing: n_tokens = 74, truncated = 0
+srv  update_slots: all slots are idle
+[GIN] 2026/09/29 - 20:15:04 | 200 |  238.567959ms |       127.0.0.1 | POST     "/api/embed"
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.031 (1/32) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 2400623933330
+slot launch_slot_: id  0 | task 70 | processing task, is_child = 0
+slot   operator(): id  0 | task 70 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 32
+slot   operator(): id  0 | task 70 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 70 | stop processing: n_tokens = 32, truncated = 0
+srv  update_slots: all slots are idle
+[GIN] 2026/09/29 - 20:15:14 | 200 |   60.503292ms |       127.0.0.1 | POST     "/api/embed"
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.296 (8/27) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.296 (> 0.100 thold), f_keep = 0.250
+slot launch_slot_: id  0 | task 72 | processing task, is_child = 0
+slot   operator(): id  0 | task 72 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 27
+slot   operator(): id  0 | task 72 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 72 | stop processing: n_tokens = 27, truncated = 0
+srv  update_slots: all slots are idle
+[GIN] 2026/09/29 - 20:15:14 | 200 |   17.882167ms |       127.0.0.1 | POST     "/api/embed"
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.216 (8/37) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.216 (> 0.100 thold), f_keep = 0.296
+slot launch_slot_: id  0 | task 74 | processing task, is_child = 0
+slot   operator(): id  0 | task 74 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 37
+slot   operator(): id  0 | task 74 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 74 | stop processing: n_tokens = 37, truncated = 0
+srv  update_slots: all slots are idle
+[GIN] 2026/09/29 - 20:15:14 | 200 |     20.8325ms |       127.0.0.1 | POST     "/api/embed"
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.333 (8/24) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.333 (> 0.100 thold), f_keep = 0.216
+slot launch_slot_: id  0 | task 76 | processing task, is_child = 0
+slot   operator(): id  0 | task 76 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 24
+slot   operator(): id  0 | task 76 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 76 | stop processing: n_tokens = 24, truncated = 0
+srv  update_slots: all slots are idle
+[GIN] 2026/09/29 - 20:15:14 | 200 |      18.948ms |       127.0.0.1 | POST     "/api/embed"
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.281 (9/32) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.281 (> 0.100 thold), f_keep = 0.375
+slot launch_slot_: id  0 | task 78 | processing task, is_child = 0
+slot   operator(): id  0 | task 78 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 32
+slot   operator(): id  0 | task 78 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 78 | stop processing: n_tokens = 32, truncated = 0
+srv  update_slots: all slots are idle
+[GIN] 2026/09/29 - 20:15:31 | 200 |   58.838333ms |       127.0.0.1 | POST     "/api/embed"
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.216 (8/37) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.216 (> 0.100 thold), f_keep = 0.250
+slot launch_slot_: id  0 | task 80 | processing task, is_child = 0
+slot   operator(): id  0 | task 80 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 37
+slot   operator(): id  0 | task 80 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 80 | stop processing: n_tokens = 37, truncated = 0
+srv  update_slots: all slots are idle
+[GIN] 2026/09/29 - 20:15:31 | 200 |   35.929708ms |       127.0.0.1 | POST     "/api/embed"
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.250 (8/32) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.250 (> 0.100 thold), f_keep = 0.216
+slot launch_slot_: id  0 | task 82 | processing task, is_child = 0
+slot   operator(): id  0 | task 82 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 32
+slot   operator(): id  0 | task 82 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 82 | stop processing: n_tokens = 32, truncated = 0
+srv  update_slots: all slots are idle
+[GIN] 2026/09/29 - 20:15:47 | 200 |   58.144458ms |       127.0.0.1 | POST     "/api/embed"
+slot get_availabl: id  0 | task -1 |  - checking sim = 1.000 (32/32) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 1.000 (> 0.100 thold), f_keep = 1.000
+slot launch_slot_: id  0 | task 84 | processing task, is_child = 0
+slot   operator(): id  0 | task 84 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 32
+slot   operator(): id  0 | task 84 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 84 | stop processing: n_tokens = 32, truncated = 0
+srv  update_slots: all slots are idle
+[GIN] 2026/09/29 - 20:15:48 | 200 |   30.876667ms |       127.0.0.1 | POST     "/api/embed"
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.296 (8/27) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.296 (> 0.100 thold), f_keep = 0.250
+slot launch_slot_: id  0 | task 86 | processing task, is_child = 0
+slot   operator(): id  0 | task 86 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 27
+slot   operator(): id  0 | task 86 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 86 | stop processing: n_tokens = 27, truncated = 0
+srv  update_slots: all slots are idle
+[GIN] 2026/09/29 - 20:15:48 | 200 |   17.857875ms |       127.0.0.1 | POST     "/api/embed"
+slot get_availabl: id  0 | task -1 |  - checking sim = 1.000 (27/27) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 1.000 (> 0.100 thold), f_keep = 1.000
+slot launch_slot_: id  0 | task 88 | processing task, is_child = 0
+slot   operator(): id  0 | task 88 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 27
+slot   operator(): id  0 | task 88 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 88 | stop processing: n_tokens = 27, truncated = 0
+srv  update_slots: all slots are idle
+[GIN] 2026/09/29 - 20:15:48 | 200 |   17.806042ms |       127.0.0.1 | POST     "/api/embed"
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.216 (8/37) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.216 (> 0.100 thold), f_keep = 0.296
+slot launch_slot_: id  0 | task 90 | processing task, is_child = 0
+slot   operator(): id  0 | task 90 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 37
+slot   operator(): id  0 | task 90 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 90 | stop processing: n_tokens = 37, truncated = 0
+srv  update_slots: all slots are idle
+[GIN] 2026/09/29 - 20:15:48 | 200 |   22.604875ms |       127.0.0.1 | POST     "/api/embed"
+slot get_availabl: id  0 | task -1 |  - checking sim = 1.000 (37/37) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 1.000 (> 0.100 thold), f_keep = 1.000
+slot launch_slot_: id  0 | task 92 | processing task, is_child = 0
+slot   operator(): id  0 | task 92 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 37
+slot   operator(): id  0 | task 92 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 92 | stop processing: n_tokens = 37, truncated = 0
+srv  update_slots: all slots are idle
+[GIN] 2026/09/29 - 20:15:48 | 200 |   24.045667ms |       127.0.0.1 | POST     "/api/embed"
+slot get_availabl: id  0 | task -1 |  - checking sim = 0.333 (8/24) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.333 (> 0.100 thold), f_keep = 0.216
+slot launch_slot_: id  0 | task 94 | processing task, is_child = 0
+slot   operator(): id  0 | task 94 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 24
+slot   operator(): id  0 | task 94 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 94 | stop processing: n_tokens = 24, truncated = 0
+srv  update_slots: all slots are idle
+[GIN] 2026/09/29 - 20:15:48 | 200 |   23.046167ms |       127.0.0.1 | POST     "/api/embed"
+slot get_availabl: id  0 | task -1 |  - checking sim = 1.000 (24/24) > 0.100
+slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 1.000 (> 0.100 thold), f_keep = 1.000
+slot launch_slot_: id  0 | task 96 | processing task, is_child = 0
+slot   operator(): id  0 | task 96 | new prompt, n_ctx_slot = 2048, n_keep = 0, task.n_tokens = 24
+slot   operator(): id  0 | task 96 | cached n_tokens = 0, memory_seq_rm [0, end)
+slot      release: id  0 | task 96 | stop processing: n_tokens = 24, truncated = 0
+srv  update_slots: all slots are idle
+[GIN] 2026/09/29 - 20:15:48 | 200 |   28.745291ms |       127.0.0.1 | POST     "/api/embed"

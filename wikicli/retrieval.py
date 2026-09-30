@@ -110,19 +110,25 @@ class Index:
     def __init__(self, chunks):
         self.chunks = chunks
         self.tfs, self.lens = [], []
-        df = Counter()
         for c in chunks:
             toks = (tokenize(c["text"]) + tokenize(c["section"]) * HEADING_WEIGHT
                     + tokenize(c["title"]))
-            tf = Counter(toks)
-            self.tfs.append(tf)
+            self.tfs.append(Counter(toks))
             self.lens.append(len(toks))
-            df.update(tf.keys())
-        n = len(chunks) or 1
-        self.avgdl = sum(self.lens) / n if chunks else 0
-        self.idf = {t: math.log(1 + (n - d + 0.5) / (d + 0.5)) for t, d in df.items()}
+        # BM25 statistics per scope, so raw-only retrieval (ask mode) depends only on the
+        # original sources: editing or adding wiki notes can never re-rank ask evidence.
+        self.stats = {scope: self._stats(scope) for scope in ("all", "raw", "wiki")}
         vectors = _load_embeddings()
         self.vectors = [vectors.get(_text_key(c)) for c in chunks]
+
+    def _stats(self, scope):
+        idx = [i for i, c in enumerate(self.chunks) if scope == "all" or c["kind"] == scope]
+        df = Counter()
+        for i in idx:
+            df.update(self.tfs[i].keys())
+        n = len(idx) or 1
+        avgdl = sum(self.lens[i] for i in idx) / n if idx else 1
+        return {t: math.log(1 + (n - d + 0.5) / (d + 0.5)) for t, d in df.items()}, avgdl
 
     @classmethod
     def load(cls):
@@ -136,6 +142,7 @@ class Index:
     def bm25(self, query, scope="all"):
         """[(chunk index, score, matched terms)] for every passage sharing a query term."""
         q = list(dict.fromkeys(tokenize(query)))    # unique query terms, in order
+        idf, avgdl = self.stats[scope]
         out = []
         for i, c in enumerate(self.chunks):
             if scope != "all" and c["kind"] != scope:
@@ -146,7 +153,7 @@ class Index:
                 if not f:
                     continue
                 matched.append(t)
-                score += self.idf[t] * f * (K1 + 1) / (f + K1 * (1 - B + B * dl / self.avgdl))
+                score += idf[t] * f * (K1 + 1) / (f + K1 * (1 - B + B * dl / avgdl))
             if score > 0:
                 out.append((i, score, matched))
         return sorted(out, key=lambda r: -r[1])

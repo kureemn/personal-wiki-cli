@@ -7,6 +7,8 @@ from . import config
 from .markdown import heading_anchor, headings, render_frontmatter, split_frontmatter, wiki_links
 
 RELATED_START, RELATED_END = "<!-- related:start -->", "<!-- related:end -->"
+GENERAL_LABEL = ("**General definition** *(written by Gemma from general knowledge, "
+                 "not taken from my sources)*: ")
 
 
 # ---------- catalog (machine copy lives in data/, human copy in the vault) ----------
@@ -42,8 +44,11 @@ def upsert_concept(path, title, folder, definition, sid, line, stamp):
         text = text.replace("## In my projects\n\n", "## In my projects\n\n" + block, 1)
     else:
         meta = {"type": "tool" if folder == "Tools" else "concept",
-                "description": definition.split(". ")[0].rstrip(".") + ".", **stamp}
-        text = (render_frontmatter(meta) + f"# {title}\n\n{definition}\n\n"
+                "description": definition.split(". ")[0].rstrip(".") + ".", **stamp,
+                "definition_source": "model general knowledge (not from sources)"}
+        # The definition is Gemma's general knowledge, so it is labelled as such; only the
+        # per-project lines below cite my sources.
+        text = (render_frontmatter(meta) + f"# {title}\n\n{GENERAL_LABEL}{definition}\n\n"
                 f"## In my projects\n\n{block}\n## Source\n\n"
                 "Each line above links to the section of the original document it came from. "
                 "See [[Source Catalog]].\n")
@@ -101,8 +106,9 @@ def finalize(catalog):
 
 def write_index(notes):
     groups = [("Projects", "Projects", "What I built for each class assignment."),
-              ("Concepts", "Concepts", "Ideas and techniques the projects rely on."),
-              ("Tools", "Tools", "Software, libraries and services used.")]
+              ("Concepts", "Concepts", "Ideas and techniques the projects rely on. Descriptions are general "
+               "definitions written by the model; the project lines inside each note cite my sources."),
+              ("Tools", "Tools", "Software, libraries and services used (same convention as Concepts).")]
     out = ["# Personal Wiki: Agentic AI Class Projects", "",
            "Start here. Each note was drafted by a local Gemma model from an original document "
            "in `raw/`, then checked against that document. Every note links back to the exact "

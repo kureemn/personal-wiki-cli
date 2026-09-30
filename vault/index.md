@@ -12,7 +12,7 @@ What I built for each class assignment.
 
 ## Concepts
 
-Ideas and techniques the projects rely on.
+Ideas and techniques the projects rely on. Descriptions are general definitions written by the model; the project lines inside each note cite my sources.
 
 - [[Attention]]: Attention mechanisms allow a model to weigh the importance of different parts of the input sequence when processing a token.
 - [[Client-Side Validation]]: Validation logic implemented in the client-side code to provide immediate user feedback before data submission.
@@ -28,7 +28,7 @@ Ideas and techniques the projects rely on.
 
 ## Tools
 
-Software, libraries and services used.
+Software, libraries and services used (same convention as Concepts).
 
 - [[Next.js]]: A React framework that enables server-side rendering and file-based routing.
 - [[PyTorch]]: A popular open-source machine learning framework used for building and training neural networks.

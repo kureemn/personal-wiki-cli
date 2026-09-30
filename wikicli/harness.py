@@ -73,6 +73,16 @@ def check_citations(answer, hits):
     return report
 
 
+def reading_order(hits):
+    """Present the selected passages grouped by source (best-ranked source first) and in
+    document order within each source. Added after the final-code rerun of test 3, where the
+    same evidence in a shuffled rank order made Gemma miss a value in a table (see README)."""
+    first_rank = {}
+    for rank, h in enumerate(hits):
+        first_rank.setdefault(h["path"], rank)
+    return sorted(hits, key=lambda h: (first_rank[h["path"]], h["line_start"]))
+
+
 def passage_record(h):
     keep = ("id", "kind", "path", "section", "line_start", "line_end", "score", "bm25",
             "cosine", "method", "text")
@@ -113,7 +123,7 @@ def ask(question, *, k=None, on_token=None):
     started = time.time()
     index = Index.load()
     hits = index.search(question, k=k or config.ASK_TOP_K, scope="raw")
-    hits = fit_to_budget(hits, config.MAX_CONTEXT_CHARS)
+    hits = reading_order(fit_to_budget(hits, config.MAX_CONTEXT_CHARS))
     result = {**env, "question": question, "passages": [passage_record(h) for h in hits]}
 
     best_bm25 = max((h.get("bm25") or 0 for h in hits), default=0)

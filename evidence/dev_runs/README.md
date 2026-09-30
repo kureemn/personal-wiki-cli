@@ -9,6 +9,7 @@ to the local Ollama server; there is no online mode. The **graded offline result
 |---|---|---|---|---|---|
 | [run1](run1/) | hybrid retrieval, single answer call | pass | pass | pass | **FAIL**: answered "mean score 1032.0" for a *grade* question ([card](run1/test4.md)) |
 | [run2](run2/) | + answer-check call (`prompts/answer-check.md`) | pass | pass | pass | pass: INSUFFICIENT EVIDENCE, rejected draft shown ([card](run2/test4.md)) |
+| [run3_reading_order](run3_reading_order/) | + per-scope BM25 statistics + passages in reading order (after the offline rerun [`sandbox-final-…201555`](../offline/sandbox-final-20260929-201555/ask/test3.md) failed Test 3) | pass | pass | pass | pass |
 
-Run 1 and run 2 cards were rendered by the harness version of that time (run 1 has no
+Each run's cards were rendered by the harness version of that time (run 1 has no
 answer-check section because that step did not exist yet).

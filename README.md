@@ -9,19 +9,21 @@ internet**. It has three modes: `chat` (personal assistant), `ask` (cited factua
 
 | What | Result | Link |
 |---|---|---|
-| 4 ask-mode tests, **Wi-Fi off** | 3 grounded, cited answers + 1 correct INSUFFICIENT EVIDENCE | [evidence cards](evidence/offline/wifi-off-20260929-194803/ask/) |
-| Chat / search mode checks, **Wi-Fi off** | 9 of 9 behave as specified | [mode_checks.md](evidence/mode_checks.md) |
-| Offline demo transcript | Wi-Fi Power: Off; ingest, help, status, 4 tests, search, chat, ask-after-chat | [Wi-Fi-off transcript](evidence/offline/wifi-off-20260929-194803/transcript.txt) · [sandboxed run](evidence/offline/sandbox-no-network-20260929-170024/transcript.txt) |
+| 4 ask-mode tests, offline | 3 grounded, cited answers + 1 correct INSUFFICIENT EVIDENCE, with Wi-Fi off and again with the final code | [final-code cards](evidence/offline/sandbox-final-code-20260929-202152/ask/) · [Wi-Fi-off cards](evidence/offline/wifi-off-20260929-194803/ask/) |
+| Chat / search mode checks, offline | 9 of 9 behave as specified (Wi-Fi-off run and final-code run) | [mode_checks.md](evidence/mode_checks.md) |
+| Offline demo transcripts | ingest, help, status, 4 tests, search, chat, ask-after-chat | [Wi-Fi off](evidence/offline/wifi-off-20260929-194803/transcript.txt) · [final code, network sandboxed](evidence/offline/sandbox-final-code-20260929-202152/transcript.txt) |
 | Obsidian screenshots | note, index, graph, source catalog, local graph | [evidence/obsidian/](evidence/obsidian/) |
 | A real failure and its fix | Test 4 answered a *grade* question with a *score* → added an answer check | [dev_runs/](evidence/dev_runs/) |
-| Retrieval before/after | BM25 missed Test 3's passages → hybrid retrieval found them | [v1](evidence/retrieval/v1_bm25_baseline.txt) · [v2](evidence/retrieval/v2_hybrid_final.txt) |
+| A second failure, found by re-testing | after a wiki-only cleanup, reshuffled passages made Gemma miss a table value in Test 3 → per-scope keyword statistics + passages shown in reading order | [§8](#8-reflection) |
+| Retrieval before/after | BM25 missed Test 3's passages → hybrid retrieval found them | [v1](evidence/retrieval/v1_bm25_baseline.txt) · [v2](evidence/retrieval/v2_hybrid_final.txt) · [v3 final](evidence/retrieval/v3_final.txt) |
 | Memory and timing | ingest peak +7.2 GB (14.5 of 16 GB); new ask question 14–21 s | [performance](evidence/performance/memory_and_timing.txt) |
 
-> **About the offline proof:** the final demonstration ran with **Wi-Fi switched off**
-> (`Wi-Fi Power (en0): Off`, google.com unreachable, `internet: unreachable` on every command),
-> after restarting Ollama and a fresh CLI process per command. An earlier run with the CLI and
-> the Ollama server inside a no-network macOS sandbox gave **identical** answers, passages and
-> citations for all four tests. See [§6](#6-offline-demonstration).
+> **About the offline proof:** the full demo ran with **Wi-Fi switched off**
+> (`Wi-Fi Power (en0): Off`, google.com unreachable, `internet: unreachable` on every command).
+> After that I improved the wiki and made two small retrieval changes (§8), so the
+> **final code** was re-run end to end with the CLI and the Ollama server inside a macOS sandbox
+> that blocks all non-localhost network traffic. Both runs pass all four tests and all nine mode
+> checks. Every run is listed in [§6](#6-offline-demonstration).
 
 ---
 
@@ -177,10 +179,11 @@ Gemma never reads my files. It only sees the text the harness puts into each req
 1. **CLI** `cli.main()` parses the arguments and calls `cmd_ask()`. `require_local()` rejects `--mode online`.
 2. **Mode rules** `harness.ask()` starts from nothing: no chat history, no persona.
 3. **Retrieval** `Index.load()` reads `data/chunks.jsonl` (176 passages). `Index.search(question, k=8, scope="raw")`:
-   - `bm25()` scores keyword overlap.
+   - `bm25()` scores keyword overlap, with keyword statistics computed over `raw/` only.
    - `dense()` embeds the question with `embeddinggemma` (`task: search result | query: ...`) and takes the dot product with the stored passage vectors in `data/embeddings.json`.
    - The two rank lists are fused by reciprocal rank, then `_diversify()` keeps a second source from being crowded out.
    - `fit_to_budget()` caps the evidence at 9,000 characters (~2.3K tokens).
+   - `reading_order()` groups the chosen passages by source, in document order, before they are numbered.
 4. **Guard.** If no passage matches at all (best BM25 < 4 and best cosine < 0.30), the harness answers INSUFFICIENT EVIDENCE without calling the model.
 5. **Prompt assembly.** system = [`prompts/wiki-instructions.md`](prompts/wiki-instructions.md); user = `[1] source: raw/... (lines 1-8, section: "...")` + passage text for each passage, then the question.
 6. **Model call.** `llm.chat()` POSTs to Ollama `/api/chat` with temperature 0, seed 42, `num_ctx` 8192 and thinking off, and returns the text plus token counts and timings.
@@ -221,6 +224,10 @@ My first version of the diversity rule capped any one source at 4 passages, whic
 Test 2's key passage (ranked #5) out. I replaced the cap with a swap rule: a source ranked in
 the top 2k gets one of the k slots. The final k is 8.
 
+Two later retrieval changes came from re-running the tests after the wiki cleanup (details in §8):
+- **Keyword statistics per scope.** The BM25 weights for `raw/` are computed from `raw/` alone, so editing wiki notes can never re-rank ask evidence.
+- **Reading order.** The selected passages are shown to Gemma grouped by source and in document order, not in rank order.
+
 **Research rules vs personality.**
 - [`wiki-instructions.md`](prompts/wiki-instructions.md) (ask) requires neutral tone, facts only from passages, `[n]` after every fact, numbers copied exactly, and a fixed `INSUFFICIENT EVIDENCE:` / `NOT IN SOURCES:` format.
 - [`persona.md`](prompts/persona.md) (chat) defines "Pip": warm, brief, an honest list of what it can and cannot do, and never inventing personal facts. It labels its own proposals as suggestions, cites only passages retrieved in the same turn, and treats chat history as conversation, not evidence.
@@ -256,6 +263,8 @@ runs match); 0.6 for chat replies. Gemma 4's "thinking" is off (`think: false`) 
 - Reworded one embedding fact and one index description.
 - Added the nanoGPT → PyTorch link that Gemma missed (the source states PyTorch 2.14.0, `DEVICE="cpu"`).
 - Every other fact was checked against its linked section.
+- Each concept/tool definition is labeled **"General definition (written by Gemma from general knowledge, not taken from my sources)"**, with `definition_source` in its properties. Only the "In my projects" lines cite my sources. New concepts get the same label automatically.
+- 11 explained concept-to-concept links were added under "Related concepts" (e.g. Row Level Security ↔ JWT Authentication, Deep Q-Network ↔ Replay Memory). Each gives the reason and links the source section that supports it.
 
 ## 6. Offline demonstration
 
@@ -272,40 +281,37 @@ runs match); 0.6 for chat replies. Gemma 4's "thinking" is off (`think: false`) 
 10. Runs ask after chat.
 11. Reports memory.
 
-**Primary run: Wi-Fi off** (2026-09-29 19:48–20:02 PDT). I turned Wi-Fi off and ran:
+All runs, oldest first (each folder has `transcript.txt`, `ask/` cards and the Ollama server log):
 
-```bash
-./scripts/offline_demo.sh
-```
+| Run | Code | Network | Ask tests | Mode checks |
+|---|---|---|---|---|
+| [`sandbox-no-network-…170024`](evidence/offline/sandbox-no-network-20260929-170024/transcript.txt) | commit `376dcee` | sandbox (no network) | 4/4 | 9/9 |
+| [`wifi-off-…194722`](evidence/offline/wifi-off-20260929-194722/transcript.txt) | `376dcee` | **Wi-Fi off** | stopped during step 5 and restarted 41 s later; incomplete | n/a |
+| [`wifi-off-…194803`](evidence/offline/wifi-off-20260929-194803/transcript.txt) | `376dcee` | **Wi-Fi off** (`Wi-Fi Power (en0): Off`) | 4/4, identical to the first run | 9/9 |
+| [`sandbox-final-…201555`](evidence/offline/sandbox-final-20260929-201555/transcript.txt) | after the wiki cleanup + per-scope BM25 | sandbox | **3/4**: Test 3 said the nanoGPT time was "not specified" although it was in passage [2] | 9/9 |
+| [`sandbox-final-code-…202152`](evidence/offline/sandbox-final-code-20260929-202152/transcript.txt) | **final** (+ reading order) | sandbox | 4/4 | 9/9 |
 
-→ [transcript](evidence/offline/wifi-off-20260929-194803/transcript.txt) · [ask cards](evidence/offline/wifi-off-20260929-194803/ask/) ·
-[Ollama server log](evidence/offline/wifi-off-20260929-194803/ollama-server.log)
-
-Two things to know about this run:
+Wi-Fi-off run, which I launched with `./scripts/offline_demo.sh`:
 - It took 14 minutes instead of ~6 because **the Mac went into idle sleep on battery** at
   19:50:26 for 626 s (macOS `pmset -g log`), in the middle of the first chat reply. That turn
   shows `647.57s`; its first token had arrived after 2.1 s, and every other chat turn took 8–19 s.
-- An earlier attempt ([`wifi-off-20260929-194722`](evidence/offline/wifi-off-20260929-194722/transcript.txt))
-  was stopped during step 5 and restarted 41 s later. It is incomplete and kept only for completeness.
+  The final-code run used `caffeinate -i` to prevent this.
 
-**Supporting run: network blocked by a sandbox** (2026-09-29 17:00 PDT):
+Sandboxed runs:
 
 ```bash
-LABEL=sandbox-no-network sandbox-exec -f scripts/no-internet.sb ./scripts/offline_demo.sh
+LABEL=sandbox-final-code caffeinate -i sandbox-exec -f scripts/no-internet.sb ./scripts/offline_demo.sh
 ```
 
-[`scripts/no-internet.sb`](scripts/no-internet.sb) denies every outbound network connection
-except to `localhost`. The Ollama server is restarted *inside* the sandbox, so neither the CLI
-nor the model server could reach the internet. The four tests produced exactly the same
-answers, passages and citations as the Wi-Fi-off run (temperature 0, fixed seed).
-→ [transcript](evidence/offline/sandbox-no-network-20260929-170024/transcript.txt) ·
-[ask cards](evidence/offline/sandbox-no-network-20260929-170024/ask/) ·
-[Ollama server log](evidence/offline/sandbox-no-network-20260929-170024/ollama-server.log)
+- [`scripts/no-internet.sb`](scripts/no-internet.sb) denies every outbound network connection except to `localhost`.
+- The Ollama server is restarted *inside* the sandbox, so neither the CLI nor the model server could reach the internet.
+- Every command logs `internet: unreachable`.
 
+To repeat the Wi-Fi-off run with the final code, turn Wi-Fi off, plug in, and run `./scripts/offline_demo.sh`.
 
 ## 7. Evidence
 
-### Four ask-mode tests (Wi-Fi off, `gemma4:e4b-it-q4_K_M`, local)
+### Four ask-mode tests (final code, offline, `gemma4:e4b-it-q4_K_M`, local)
 
 Expectations were written first in [`evals/questions.json`](evals/questions.json). Each card
 contains:
@@ -319,11 +325,13 @@ contains:
 
 | Test | Question (abridged) | Retrieved expected source? | Answer | Citations check out? | Card |
 |---|---|---|---|---|---|
-| 1 direct | Trained vs untrained mean score | yes, ranks 1–2 | "trained 1032.0 [1][2]… baseline 492.0 [1][2][6]" | yes, all three passages state both numbers | [test1](evidence/offline/wifi-off-20260929-194803/ask/test1.md) |
-| 2 reworded | Why can't one person see someone else's contacts? | yes, **rank 5** | Row Level Security, `auth.user_id() = user_id`, JWT verified before Postgres [1][5][6] | yes | [test2](evidence/offline/wifi-off-20260929-194803/ask/test2.md) |
-| 3 two sources | Compute device + training time for Pac-Man and nanoGPT | yes, both | M1 Pro + PyTorch MPS, 4,388 s [4]; M1 Pro `DEVICE="cpu"`, 16.6 s / 18.7 s [1][2] | yes (omits that 4,388 s includes demo recording) | [test3](evidence/offline/wifi-off-20260929-194803/ask/test3.md) |
-| 4 unanswerable | What grade did I receive for Pac-Man? | n/a (Pac-Man passages retrieved, none has a grade) | **INSUFFICIENT EVIDENCE**, with the rejected draft shown | n/a | [test4](evidence/offline/wifi-off-20260929-194803/ask/test4.md) |
+| 1 direct | Trained vs untrained mean score | yes (intro table and per-seed table) | "trained 1032.0 [1][4]… baseline 492.0 [1][4]" | yes, both passages state both numbers | [test1](evidence/offline/sandbox-final-code-20260929-202152/ask/test1.md) |
+| 2 reworded | Why can't one person see someone else's contacts? | yes, **rank 5** | Row Level Security, `auth.user_id() = user_id`, JWT verified before Postgres, same Data API URL for both accounts [1][5][7] | yes | [test2](evidence/offline/sandbox-final-code-20260929-202152/ask/test2.md) |
+| 3 two sources | Compute device + training time for Pac-Man and nanoGPT | yes, both | M1 Pro `DEVICE="cpu"`, 16.6 s / 18.7 s [3][4]; M1 Pro + PyTorch MPS, 4,388 s [8] | yes (omits that 4,388 s includes demo recording) | [test3](evidence/offline/sandbox-final-code-20260929-202152/ask/test3.md) |
+| 4 unanswerable | What grade did I receive for Pac-Man? | n/a (Pac-Man passages retrieved, none has a grade) | **INSUFFICIENT EVIDENCE**, with the rejected draft shown | n/a | [test4](evidence/offline/sandbox-final-code-20260929-202152/ask/test4.md) |
 
+The Wi-Fi-off cards ([test1](evidence/offline/wifi-off-20260929-194803/ask/test1.md) · [test2](evidence/offline/wifi-off-20260929-194803/ask/test2.md) · [test3](evidence/offline/wifi-off-20260929-194803/ask/test3.md) · [test4](evidence/offline/wifi-off-20260929-194803/ask/test4.md))
+show the same outcomes from the previous code version, with different citation numbers because passages were then shown in rank order.
 Development runs, including the failed first version of Test 4, are in [`evidence/dev_runs/`](evidence/dev_runs/).
 
 ### Chat and search mode checks
@@ -347,10 +355,12 @@ Obsidian window only, with [`scripts/obsidian_screenshots.py`](scripts/obsidian_
 | Open note: readable filename = heading, each fact links to its source section | Index grouped by topic |
 |---|---|
 | ![note](evidence/obsidian/1b-note-ms-pac-man-dqn.png) | ![index](evidence/obsidian/2-index.png) |
-| **Graph (`path:wiki/`)**: ML projects linked via shared PyTorch / Learning Rate; the web app is its own cluster | **Concept note + local graph**: one note, two projects |
+| **Graph (`path:wiki/`)**: ML projects linked via shared PyTorch / Learning Rate; concepts linked to related concepts; the web app is its own cluster | **Concept note + local graph**: one note, two projects |
 | ![graph](evidence/obsidian/3-graph.png) | ![local graph](evidence/obsidian/5-concept-learning-rate-with-local-graph.png) |
 | **Source catalog**: source ID → checksum → generated notes | **Properties**: machine IDs kept in metadata, not filenames |
 | ![catalog](evidence/obsidian/4-source-catalog.png) | ![properties](evidence/obsidian/1a-note-properties-machine-ids.png) |
+| **Concept note after review**: labeled general definition, sourced project line, explained related concepts | |
+| ![related concepts](evidence/obsidian/6-concept-row-level-security-related.png) | |
 
 **One trace, from the index to the evidence:**
 1. [index](vault/index.md) → [[Ms Pac-Man DQN]]
@@ -384,10 +394,29 @@ only #5. The embedder preferred the intro and screenshot passages, which mention
 and "account B cannot see" but not *why*. The system works because k = 8. A smaller k, or a
 larger corpus, would lose it.
 
+**A second failure, found by re-running the tests after cleanup.** After the Wi-Fi-off run
+I labeled the model-written definitions and added the related-concept links. Re-running the
+tests is what the assignment asks for after a cleanup, and it caught two problems:
+1. **Wiki edits re-ranked ask evidence.** BM25 keyword weights were computed over the whole
+   index, so adding wiki text changed the raw-only rankings for Tests 1 and 3.
+   Fix: keyword statistics are now computed per scope, so ask retrieval depends only on
+   `raw/`. I verified that the raw rankings are identical with or without any wiki notes.
+2. **Gemma was sensitive to passage order.** In the next offline run
+   ([`sandbox-final-…201555`](evidence/offline/sandbox-final-20260929-201555/ask/test3.md)),
+   Test 3 had the nanoGPT timing table at [2], exactly as before. But with [4]/[5] swapped and
+   a different 8th passage, Gemma wrote that the time was "not specified". The answer check
+   still said "answers it", so neither check caught this partial miss.
+   Fix: passages are now presented in **reading order** (grouped by source, in document order),
+   so the table sits next to the sentences around it. Dev run 3 and the final offline run pass
+   all four tests.
+
+The lesson: a passing test at temperature 0 is one sample of the model's behavior, not proof
+of robustness. The same evidence, reordered, can produce a different answer.
+
 **Next improvement I would try:** a local reranking step. Score the top ~20 fused passages
 against the question, using EmbeddingGemma similarity per sentence or a small cross-encoder,
-before taking the top 8. Keep `evals/questions.json` as the regression set and track the
-expected passage's rank, not just pass/fail.
+before taking the top 8. Keep `evals/questions.json` as the regression set, track the expected passage's rank, and
+run each test under a few passage orders to measure stability, not just pass/fail.
 
 **Other honest notes.**
 - The Mac idle-slept on battery during the Wi-Fi-off demo (see §6). Keep it plugged in, or run `caffeinate -i ./scripts/offline_demo.sh`, for clean timings.

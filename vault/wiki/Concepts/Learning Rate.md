@@ -5,10 +5,11 @@ generated_by: "gemma4:e4b-it-q4_K_M"
 generated_at: "2026-09-29T16:30:26-07:00"
 reviewed: true
 reviewed_at: "2026-09-29"
+definition_source: model general knowledge (not from sources)
 ---
 # Learning Rate
 
-A hyperparameter that controls the step size taken when updating the network's weights during training.
+**General definition** *(written by Gemma from general knowledge, not taken from my sources)*: A hyperparameter that controls the step size taken when updating the network's weights during training.
 
 ## In my projects
 

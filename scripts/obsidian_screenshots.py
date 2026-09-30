@@ -32,6 +32,7 @@ layouts = {
   "3-graph": ([leaf("graph")], None),
   "4-source-catalog": ([leaf("md", "Source Catalog.md")], None),
   "5-concept-learning-rate-with-local-graph": ([leaf("md", "wiki/Concepts/Learning Rate.md")], [leaf("localgraph", "wiki/Concepts/Learning Rate.md")]),
+  "6-concept-row-level-security-related": ([leaf("md", "wiki/Concepts/Row Level Security.md")], [leaf("localgraph", "wiki/Concepts/Row Level Security.md")]),
 }
 names = sys.argv[1:] or list(layouts)
 for name in names:
@@ -41,7 +42,7 @@ for name in names:
     import os
     json.dump({"x": 40, "y": 30, "width": 1440, "height": 940, "isMaximized": False, "devTools": False, "zoom": 0},
               open(os.path.expanduser("~/Library/Application Support/obsidian/71fb9a2940a3042a.json"), "w"))
-    subprocess.run(["open", "-a", "Obsidian"]); time.sleep(6 if "graph" in name else 4)
+    subprocess.run(["open", "-a", "Obsidian"]); time.sleep(12 if "graph" in name else 6)
     wins = subprocess.run(["osascript", "-l", "JavaScript", "-e",
         'ObjC.import("CoreGraphics");var l=ObjC.deepUnwrap(ObjC.castRefToObject($.CGWindowListCopyWindowInfo($.kCGWindowListOptionAll,0)));'
         'JSON.stringify(l.filter(w=>w.kCGWindowOwnerName=="Obsidian"&&w.kCGWindowLayer==0&&w.kCGWindowBounds.Height>300).map(w=>w.kCGWindowNumber))'],
