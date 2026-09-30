@@ -1,0 +1,50 @@
+{
+  "berkeley-network-tracker-readme": {
+    "project_title": "Berkeley Networking Tracker",
+    "project_note": "wiki/Projects/Berkeley Networking Tracker.md",
+    "concept_notes": [
+      "wiki/Concepts/Row Level Security.md",
+      "wiki/Concepts/JWT Authentication.md",
+      "wiki/Concepts/Client-Side Validation.md",
+      "wiki/Concepts/Serverless Database.md",
+      "wiki/Tools/Next.js.md"
+    ],
+    "sha256": "3a234448db19b7e00ee69ac882c8ab18bc487695b0640125fa848066be2348b1",
+    "raw_file": "raw/Berkeley Network Tracker README.md",
+    "bytes": 21226,
+    "ingested_at": "2026-09-29T16:36:42-07:00",
+    "model": "gemma4:e4b-it-q4_K_M"
+  },
+  "custom-nanogpt-llm-readme": {
+    "project_title": "Custom nanoGPT LLM",
+    "project_note": "wiki/Projects/Custom nanoGPT LLM.md",
+    "concept_notes": [
+      "wiki/Concepts/Language Model.md",
+      "wiki/Concepts/Attention.md",
+      "wiki/Concepts/Embedding Vector.md",
+      "wiki/Concepts/Learning Rate.md",
+      "wiki/Tools/nanoGPT.md"
+    ],
+    "sha256": "8b446fde420117d6ea89ca726779fd0d642a723d0b987d75ba1c8eabd83fe9e8",
+    "raw_file": "raw/Custom nanoGPT LLM README.md",
+    "bytes": 57504,
+    "ingested_at": "2026-09-29T16:39:06-07:00",
+    "model": "gemma4:e4b-it-q4_K_M"
+  },
+  "ms-pac-man-dqn-readme": {
+    "project_title": "Ms Pac-Man DQN",
+    "project_note": "wiki/Projects/Ms Pac-Man DQN.md",
+    "concept_notes": [
+      "wiki/Concepts/Deep Q-Network.md",
+      "wiki/Concepts/Replay Memory.md",
+      "wiki/Concepts/Exploration.md",
+      "wiki/Concepts/Learning Rate.md",
+      "wiki/Tools/PyTorch.md"
+    ],
+    "sha256": "877f75d540bf2334255e2e68c5a7eec8d9b04fa11aac3b13a35d37950704d5c2",
+    "raw_file": "raw/Ms Pac-Man DQN README.md",
+    "bytes": 16511,
+    "ingested_at": "2026-09-29T16:39:54-07:00",
+    "model": "gemma4:e4b-it-q4_K_M"
+  }
+}

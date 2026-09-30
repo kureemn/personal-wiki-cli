@@ -1,0 +1,45 @@
+{
+  "_note": "Written 2026-09-29 BEFORE retrieval was implemented. Kept outside vault/ so the harness can never retrieve the answer key.",
+  "tests": [
+    {
+      "id": "test1",
+      "title": "Direct question, one source",
+      "question": "What mean evaluation score did the trained Ms. Pac-Man agent get, and what did the untrained baseline get?",
+      "expected_behavior": "Answer 1032.0 for the trained agent vs 492.0 for the untrained baseline (+540), cited to the Pac-Man README.",
+      "expected_sources": ["raw/Ms Pac-Man DQN README.md"],
+      "expected_passage": "| Mean score over the five evaluation games | 492.0 | **1032.0** |  (intro table; repeated in the per-seed table: **Mean** | **492.0** | **1032.0** | **+540.0**)",
+      "must_contain_any": ["1032"],
+      "answerable": true
+    },
+    {
+      "id": "test2",
+      "title": "Answerable, phrased differently from the source",
+      "question": "Why can't one person using my networking app see someone else's saved contacts?",
+      "expected_behavior": "Explain Postgres Row Level Security: every policy on the contacts table checks auth.user_id() = user_id, where auth.user_id() comes from the signed-in user's JWT. The source never uses the words 'person' or 'someone else'.",
+      "expected_sources": ["raw/Berkeley Network Tracker README.md"],
+      "expected_passage": "## Authentication & Row Level Security -- 'every policy on `contacts` reduces to one predicate — `auth.user_id() = user_id`'",
+      "must_contain_any": ["row level security", "rls", "auth.user_id"],
+      "answerable": true
+    },
+    {
+      "id": "test3",
+      "title": "Answer connects two sources",
+      "question": "Which compute device did I train the Pac-Man agent and the nanoGPT models on, and how long did the training take for each?",
+      "expected_behavior": "Pac-Man: Apple M1 Pro with the PyTorch MPS backend, ~73 minutes (4,388 s) for 800 episodes. nanoGPT: same M1 Pro but DEVICE=\"cpu\", training loop 16.6 s (starter) and 18.7 s (expanded). Each claim cited to its own README.",
+      "expected_sources": ["raw/Ms Pac-Man DQN README.md", "raw/Custom nanoGPT LLM README.md"],
+      "expected_passage": "Pac-Man 'What the run actually cost' table (Elapsed time 4,388 seconds, Hardware ... PyTorch MPS backend); nanoGPT '## The runs' table (Training-loop time 16.6 s / 18.7 s) and 'DEVICE=\"cpu\" as in the course notebook'",
+      "must_contain_any": ["mps"],
+      "answerable": true
+    },
+    {
+      "id": "test4",
+      "title": "Plausible but unanswerable",
+      "question": "What grade did I receive for the Ms. Pac-Man DQN assignment?",
+      "expected_behavior": "Explicit insufficient-evidence response. The README describes the submission and results but never states a grade. Retrieval will likely return Pac-Man passages; the model must not turn the score (1032) into a grade.",
+      "expected_sources": [],
+      "expected_passage": "(none — no source contains a grade)",
+      "must_contain_any": ["insufficient evidence"],
+      "answerable": false
+    }
+  ]
+}

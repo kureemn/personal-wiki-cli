@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.DS_Store
+# per-user Obsidian UI state (graph.json and app.json are kept: they record the graph filter used)
+vault/.obsidian/workspace*.json
+vault/.obsidian/cache
+# chat drafts saved with /save are personal scratch, not evidence
+drafts/
+# model weights are never committed; see README for `ollama pull`
+*.gguf

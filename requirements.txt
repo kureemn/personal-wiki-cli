@@ -1,0 +1,4 @@
+# The harness uses only the Python 3.12 standard library (argparse, json, urllib, re, ...).
+# External runtime (not pip): Ollama 0.34.4  ->  brew install ollama
+# Models (pulled while online):  ollama pull gemma4:e4b-it-q4_K_M
+#                                ollama pull embeddinggemma:300m

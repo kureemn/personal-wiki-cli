@@ -1,0 +1,39 @@
+Retrieval v1: plain BM25 (tokenizer kept whole hyphenated word + parts; H1 title in every heading path).
+Run 2026-09-29 before any model answers. scope=raw, k=6
+
+## test1 What mean evaluation score did the trained Ms. Pac-Man agent get, and what did the untrained baseline get?
+   expected: ['raw/Ms Pac-Man DQN README.md']
+   35.37 raw/Ms Pac-Man DQN README.md#L1-13                      'Ms. Pac-Man DQN — Class 3 submission'
+   26.69 raw/Ms Pac-Man DQN README.md#L102-120                   'All five evaluation scores'
+   26.47 raw/Ms Pac-Man DQN README.md#L70-83                     'What I expected, and what actually happened'
+   22.53 raw/Ms Pac-Man DQN README.md#L130-143                   'Gameplay'
+   20.70 raw/Ms Pac-Man DQN README.md#L255-263                   'One next experiment'
+   20.19 raw/Ms Pac-Man DQN README.md#L145-155                   'Gameplay'
+
+## test2 Why can't one person using my networking app see someone else's saved contacts?
+   expected: ['raw/Berkeley Network Tracker README.md']
+   17.68 raw/Berkeley Network Tracker README.md#L190-192         'Authentication & Row Level Security'
+   15.39 raw/Berkeley Network Tracker README.md#L161-188         'Authentication & Row Level Security'
+   14.03 raw/Berkeley Network Tracker README.md#L1-8             'Berkeley Networking Tracker'
+   13.22 raw/Berkeley Network Tracker README.md#L41-46           'Walkthrough & screenshots'
+   12.77 raw/Berkeley Network Tracker README.md#L73-90           'Architecture'
+   12.67 raw/Berkeley Network Tracker README.md#L98-101          'Architecture'
+
+## test3 Which compute device did I train the Pac-Man agent and the nanoGPT models on, and how long did the training take for each?
+   expected: ['raw/Ms Pac-Man DQN README.md', 'raw/Custom nanoGPT LLM README.md']
+   15.05 raw/Ms Pac-Man DQN README.md#L245-253                   'One next experiment'
+   14.72 raw/Ms Pac-Man DQN README.md#L222-228                   'How the agent works, in plain language'
+   14.61 raw/Ms Pac-Man DQN README.md#L265-272                   'Where the checkpoints are'
+   13.56 raw/Ms Pac-Man DQN README.md#L70-83                     'What I expected, and what actually happened'
+   12.80 raw/Ms Pac-Man DQN README.md#L204-220                   'How the agent works, in plain language'
+   12.42 raw/Ms Pac-Man DQN README.md#L230-243                   'One limitation'
+
+## test4 What grade did I receive for the Ms. Pac-Man DQN assignment?
+   expected: (none)
+   15.28 raw/Ms Pac-Man DQN README.md#L1-13                      'Ms. Pac-Man DQN — Class 3 submission'
+   14.46 raw/Ms Pac-Man DQN README.md#L54-68                     'Two other hyperparameters I changed, and why'
+   14.06 raw/Ms Pac-Man DQN README.md#L52-52                     'My three choices'
+   13.94 raw/Ms Pac-Man DQN README.md#L122-128                   'Training dashboard'
+   13.90 raw/Ms Pac-Man DQN README.md#L222-228                   'How the agent works, in plain language'
+   13.67 raw/Ms Pac-Man DQN README.md#L274-284                   'Repository contents'
+

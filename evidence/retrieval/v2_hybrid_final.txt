@@ -1,0 +1,47 @@
+Retrieval v2 (final): BM25 (tokenizer fixed) + embeddinggemma:300m, reciprocal-rank fusion,
+diversity swap so a source ranked in the top 2k gets one slot. scope=raw, k=8 (ASK_TOP_K).
+
+## test1 What mean evaluation score did the trained Ms. Pac-Man agent get, and what did the untrained baseline get?
+   expected: ['raw/Ms Pac-Man DQN README.md'] | | Mean score over the five evaluation games | 492.0 | **1032.0** |  (intro table; repeated in the per-seed tab
+  [1] rrf 0.0325 (bm25 #2, dense #1) Ms Pac-Man DQN README.md#L102-120                'All five evaluation scores'
+  [2] rrf 0.0320 (bm25 #1, dense #4) Ms Pac-Man DQN README.md#L1-13                   'Ms. Pac-Man DQN — Class 3 submission'
+  [3] rrf 0.0320 (bm25 #3, dense #2) Ms Pac-Man DQN README.md#L70-83                  'What I expected, and what actually happene'
+  [4] rrf 0.0310 (bm25 #6, dense #3) Ms Pac-Man DQN README.md#L145-155                'Gameplay'
+  [5] rrf 0.0303 (bm25 #4, dense #8) Ms Pac-Man DQN README.md#L130-143                'Gameplay'
+  [6] rrf 0.0303 (bm25 #7, dense #5) Ms Pac-Man DQN README.md#L180-194                'Earlier runs, reported honestly'
+  [7] rrf 0.0296 (bm25 #9, dense #6) Ms Pac-Man DQN README.md#L46-51                  'My three choices'
+  [8] rrf 0.0291 (bm25 #5, dense #13) Ms Pac-Man DQN README.md#L255-263                'One next experiment'
+
+## test2 Why can't one person using my networking app see someone else's saved contacts?
+   expected: ['raw/Berkeley Network Tracker README.md'] | ## Authentication & Row Level Security -- 'every policy on `contacts` reduces to one predicate — `auth.user_id
+  [1] rrf 0.0325 (bm25 #1, dense #2) Berkeley Network Tracker README.md#L1-8          'Berkeley Networking Tracker'
+  [2] rrf 0.0313 (bm25 #7, dense #1) Berkeley Network Tracker README.md#L41-46        'Walkthrough & screenshots'
+  [3] rrf 0.0306 (bm25 #8, dense #3) Berkeley Network Tracker README.md#L277-283      'Known limitations & next steps'
+  [4] rrf 0.0301 (bm25 #5, dense #8) Berkeley Network Tracker README.md#L102-104      'Architecture'
+  [5] rrf 0.0300 (bm25 #3, dense #11) Berkeley Network Tracker README.md#L161-188      'Authentication & Row Level Security'
+  [6] rrf 0.0291 (bm25 #14, dense #4) Berkeley Network Tracker README.md#L196-203      'Verifying it yourself'
+  [7] rrf 0.0290 (bm25 #6, dense #12) Berkeley Network Tracker README.md#L98-101       'Architecture'
+  [8] rrf 0.0288 (bm25 #4, dense #16) Berkeley Network Tracker README.md#L73-90        'Architecture'
+
+## test3 Which compute device did I train the Pac-Man agent and the nanoGPT models on, and how long did the training take for each?
+   expected: ['raw/Ms Pac-Man DQN README.md', 'raw/Custom nanoGPT LLM README.md'] | Pac-Man 'What the run actually cost' table (Elapsed time 4,388 seconds, Hardware ... PyTorch MPS backend); nan
+  [1] rrf 0.0305 (bm25 #11, dense #1) Custom nanoGPT LLM README.md#L272-280            'The runs'
+  [2] rrf 0.0299 (bm25 #9, dense #5) Custom nanoGPT LLM README.md#L260-271            'The runs'
+  [3] rrf 0.0293 (bm25 #16, dense #2) Custom nanoGPT LLM README.md#L1-13               'Building a Custom LLM with nanoGPT: Class '
+  [4] rrf 0.0281 (bm25 #22, dense #3) Ms Pac-Man DQN README.md#L157-178                'What the run actually cost'
+  [5] rrf 0.0279 (bm25 #17, dense #7) Ms Pac-Man DQN README.md#L15-36                  'Open and run the notebook'
+  [6] rrf 0.0273 (bm25 #7, dense #21) Ms Pac-Man DQN README.md#L46-51                  'My three choices'
+  [7] rrf 0.0265 (bm25 #19, dense #12) Custom nanoGPT LLM README.md#L809-818            'What I learned'
+  [8] rrf 0.0264 (bm25 #24, dense #9) Custom nanoGPT LLM README.md#L290-301            'Loss on the fixed panels'
+
+## test4 What grade did I receive for the Ms. Pac-Man DQN assignment?
+   expected: (none) | (none — no source contains a grade)
+  [1] rrf 0.0320 (bm25 #1, dense #4) Ms Pac-Man DQN README.md#L1-13                   'Ms. Pac-Man DQN — Class 3 submission'
+  [2] rrf 0.0311 (bm25 #7, dense #2) Ms Pac-Man DQN README.md#L85-98                  'What I expected, and what actually happene'
+  [3] rrf 0.0306 (bm25 #3, dense #8) Ms Pac-Man DQN README.md#L274-284                'Repository contents'
+  [4] rrf 0.0301 (bm25 #8, dense #5) Ms Pac-Man DQN README.md#L46-51                  'My three choices'
+  [5] rrf 0.0299 (bm25 #5, dense #9) Ms Pac-Man DQN README.md#L52-52                  'My three choices'
+  [6] rrf 0.0297 (bm25 #4, dense #11) Ms Pac-Man DQN README.md#L122-128                'Training dashboard'
+  [7] rrf 0.0296 (bm25 #2, dense #14) Ms Pac-Man DQN README.md#L54-68                  'Two other hyperparameters I changed, and w'
+  [8] rrf 0.0291 (bm25 #19, dense #1) Ms Pac-Man DQN README.md#L180-194                'Earlier runs, reported honestly'
+

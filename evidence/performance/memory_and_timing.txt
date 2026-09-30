@@ -1,0 +1,28 @@
+$ scripts/measure_memory.sh ./wiki ingest "vault/raw/Ms Pac-Man DQN README.md" --force   (models unloaded first)
+── ingest · local · model gemma4:e4b-it-q4_K_M · internet: reachable ──
++ Ms Pac-Man DQN README.md: sending 16,459 chars to gemma4:e4b-it-q4_K_M ...
+  wiki/Projects/Ms Pac-Man DQN.md is marked reviewed: true, so it was NOT overwritten.
+  New draft (55.6s, same filename, no new notes) saved for comparison: data/review/Ms Pac-Man DQN.md
+  (rerun with --overwrite-reviewed to replace it)
+  embeddings: 0 new passages embedded with embeddinggemma:300m
+  index.md, Source Catalog.md and retrieval index rebuilt (176 passages)
+  link check: all internal links and source references resolve
+memory: system used before=7269 MB, peak=14501 MB (delta +7232 MB); Ollama runners peak RSS=6915 MB
+
+$ scripts/measure_memory.sh ./wiki ask ... (warm, same process state)
+── ask · local · model gemma4:e4b-it-q4_K_M · embed embeddinggemma:300m · internet: reachable ──
+Q: Why can't one person using my networking app see someone else's saved contacts?
+
+retrieving passages, calling local Gemma, then checking the answer...
+A: The privacy of contacts is enforced by Postgres itself, specifically through Row Level Security (RLS) [1]. The ownership rule dictates that every policy on the `contacts` table reduces to the predicate `auth.user_id() = user_id` [5]. This means that the Data API verifies the JWT signature before Postgres processes the query, and the RLS policies ensure that a user can only see or change data where `auth.user_id()` matches the `user_id` [5]. For example, when Account B signs in, the contacts list is empty even if rows exist in the table for Account A [6].
+
+answer check: answers it (asks for: Why can't one person using my networking app see someone else's saved contacts?; answer gives: The reason is that Postgres enforces contact privacy using Row Level Security (RLS), which ensures that a user can only see data where their authenticated user ID matches the user ID associated with the contact record.)
+Citations:
+  [1] raw/Berkeley Network Tracker README.md  lines 1-8  § Berkeley Networking Tracker
+  [5] raw/Berkeley Network Tracker README.md  lines 161-188  § Authentication & Row Level Security
+  [6] raw/Berkeley Network Tracker README.md  lines 196-203  § Verifying it yourself
+  retrieved but not cited: [2] Berkeley Network Tracker README.md § Walkthrough & screenshots, [3] Berkeley Network Tracker README.md § Known limitations & next steps, [4] Berkeley Network Tracker README.md § Architecture, [7] Berkeley Network Tracker README.md § Architecture, [8] Berkeley Network Tracker README.md § Architecture
+Citation check: every factual sentence cites a retrieved passage; all numbers appear in the cited passages.
+
+status: answered · 23.16s total · 2286 prompt tok · 131 output tok · 28.7 tok/s · saved to runs/2026-09-29/ask.jsonl
+memory: system used before=14411 MB, peak=14412 MB (delta +1 MB); Ollama runners peak RSS=6945 MB

@@ -1,0 +1,7 @@
+(version 1)
+; macOS sandbox profile: everything allowed EXCEPT network traffic that leaves this machine.
+; Used to prove the CLI + local Ollama server work with no internet access.
+(allow default)
+(deny network-outbound)
+(allow network-outbound (remote ip "localhost:*"))
+(allow network-outbound (remote unix-socket))
